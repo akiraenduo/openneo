@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { DashboardHeader } from '@/components/dashboard-header'
+import { useTranslation } from '@/lib/i18n'
 import { useNetworkDomains, useAccessRequests, useAuditLogs, useReadOnlyMode } from '@/lib/store'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -27,6 +28,7 @@ import {
 } from 'lucide-react'
 
 export default function NetworkPage() {
+  const { t } = useTranslation()
   const { domains, addDomain, updateDomain, deleteDomain } = useNetworkDomains()
   const { requests, updateRequest } = useAccessRequests()
   const { addLog } = useAuditLogs()
@@ -95,26 +97,26 @@ export default function NetworkPage() {
 
   return (
     <>
-      <DashboardHeader title="ネットワーク" titleEn="Network" />
+      <DashboardHeader title={t('network.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Summary */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">許可ドメイン</span>
+                <span className="text-xs text-muted-foreground">{t('network.allowedDomains')}</span>
                 <span className="text-2xl font-bold">{approvedCount}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">合計ドメイン</span>
+                <span className="text-xs text-muted-foreground">{t('network.totalDomains')}</span>
                 <span className="text-2xl font-bold">{domains.length}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">承認待ちリクエスト</span>
+                <span className="text-xs text-muted-foreground">{t('network.pendingRequests')}</span>
                 <span className="text-2xl font-bold text-destructive">
                   {pendingNetworkRequests.length}
                 </span>
@@ -128,10 +130,10 @@ export default function NetworkPage() {
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-sm">
                   <ShieldAlert className="size-4 text-amber-600" />
-                  <span className="text-amber-900">承認待ちリクエスト (Approval Required)</span>
+                  <span className="text-amber-900">{t('network.approvalRequired')}</span>
                 </CardTitle>
                 <CardDescription className="text-amber-700">
-                  エージェントからのネットワーク接続リクエスト
+                  {t('network.networkRequestsFromAgents')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
@@ -158,7 +160,7 @@ export default function NetworkPage() {
                         onClick={() => handleApproveRequest(req.id, req.resource)}
                       >
                         <CheckCircle2 className="mr-1 size-3.5" />
-                        承認
+                        {t('common.approve')}
                       </Button>
                       <Button
                         size="sm"
@@ -168,7 +170,7 @@ export default function NetworkPage() {
                         onClick={() => handleDenyRequest(req.id, req.resource)}
                       >
                         <XCircle className="mr-1 size-3.5" />
-                        拒否
+                        {t('common.deny')}
                       </Button>
                     </div>
                   </div>
@@ -181,25 +183,25 @@ export default function NetworkPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <div>
-                <CardTitle className="text-sm">許可リスト (Allowlist)</CardTitle>
-                <CardDescription>エージェントが接続を許可されたドメイン</CardDescription>
+                <CardTitle className="text-sm">{t('network.allowlist')}</CardTitle>
+                <CardDescription>{t('network.allowlistDesc')}</CardDescription>
               </div>
               <Dialog open={addOpen} onOpenChange={setAddOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline" disabled={readOnly}>
                     <Plus className="mr-1 size-3.5" />
-                    追加
+                    {t('common.add')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>ドメインを追加 (Add Domain)</DialogTitle>
+                    <DialogTitle>{t('network.addDomain')}</DialogTitle>
                     <DialogDescription>
-                      許可リストに新しいドメインを追加します。
+                      {t('network.addDomainDesc')}
                     </DialogDescription>
                   </DialogHeader>
                   <Input
-                    placeholder="例: api.example.com"
+                    placeholder={t('network.domainPlaceholder')}
                     value={newDomain}
                     onChange={(e) => setNewDomain(e.target.value)}
                     onKeyDown={(e) => {
@@ -208,10 +210,10 @@ export default function NetworkPage() {
                   />
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setAddOpen(false)}>
-                      キャンセル
+                      {t('common.cancel')}
                     </Button>
                     <Button onClick={handleAddDomain} disabled={!newDomain.trim()}>
-                      追加する
+                      {t('network.addBtn')}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -229,7 +231,7 @@ export default function NetworkPage() {
                       <div className="flex flex-col gap-0.5">
                         <span className="text-sm font-mono">{domain.domain}</span>
                         <span className="text-[10px] text-muted-foreground">
-                          追加日: {domain.addedAt}
+                          {domain.addedAt}
                         </span>
                       </div>
                     </div>
@@ -237,12 +239,12 @@ export default function NetworkPage() {
                       {domain.approved ? (
                         <Badge variant="outline" className="gap-1 text-[10px]">
                           <CheckCircle2 className="size-3" />
-                          許可
+                          {t('network.allowed')}
                         </Badge>
                       ) : (
                         <Badge variant="destructive" className="gap-1 text-[10px]">
                           <XCircle className="size-3" />
-                          未承認
+                          {t('network.unapproved')}
                         </Badge>
                       )}
                       <Button
@@ -260,14 +262,14 @@ export default function NetworkPage() {
                         }}
                       >
                         <Trash2 className="size-3.5 text-muted-foreground" />
-                        <span className="sr-only">削除</span>
+                        <span className="sr-only">{t('common.delete')}</span>
                       </Button>
                     </div>
                   </div>
                 ))}
                 {domains.length === 0 && (
                   <p className="py-4 text-center text-sm text-muted-foreground">
-                    ドメインが登録されていません
+                    {t('network.noDomains')}
                   </p>
                 )}
               </div>

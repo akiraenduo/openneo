@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { DashboardHeader } from '@/components/dashboard-header'
+import { useTranslation } from '@/lib/i18n'
 import { useAuditLogs } from '@/lib/store'
 import {
   Table,
@@ -34,6 +35,7 @@ const eventTypeColors: Record<string, string> = {
 }
 
 export default function AuditPage() {
+  const { t } = useTranslation()
   const { logs } = useAuditLogs()
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<string>('all')
@@ -56,7 +58,7 @@ export default function AuditPage() {
 
   return (
     <>
-      <DashboardHeader title="監査ログ" titleEn="Audit Logs" />
+      <DashboardHeader title={t('audit.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Toolbar */}
@@ -66,7 +68,7 @@ export default function AuditPage() {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="検索 (Search)..."
+                placeholder={t('common.search')}
                 className="pl-8"
               />
             </div>
@@ -75,10 +77,10 @@ export default function AuditPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">全てのイベント</SelectItem>
-                {eventTypes.map((t) => (
-                  <SelectItem key={t} value={t}>
-                    {t}
+                <SelectItem value="all">{t('audit.allEvents')}</SelectItem>
+                {eventTypes.map((et) => (
+                  <SelectItem key={et} value={et}>
+                    {et}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -90,18 +92,18 @@ export default function AuditPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">日時</TableHead>
-                  <TableHead className="text-xs">イベント</TableHead>
-                  <TableHead className="text-xs">アクター</TableHead>
-                  <TableHead className="hidden text-xs sm:table-cell">詳細</TableHead>
-                  <TableHead className="hidden text-xs md:table-cell">ハッシュチェーン</TableHead>
+                  <TableHead className="text-xs">{t('audit.dateTime')}</TableHead>
+                  <TableHead className="text-xs">{t('audit.event')}</TableHead>
+                  <TableHead className="text-xs">{t('audit.actor')}</TableHead>
+                  <TableHead className="hidden text-xs sm:table-cell">{t('audit.details')}</TableHead>
+                  <TableHead className="hidden text-xs md:table-cell">{t('audit.hashChain')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center text-sm text-muted-foreground">
-                      ログが見つかりません。
+                      {t('audit.noLogs')}
                     </TableCell>
                   </TableRow>
                 )}

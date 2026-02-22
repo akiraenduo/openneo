@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { DashboardHeader } from '@/components/dashboard-header'
+import { useTranslation } from '@/lib/i18n'
 import { useCredentials, useAuditLogs, useReadOnlyMode } from '@/lib/store'
 import {
   Table,
@@ -47,6 +48,7 @@ import {
 import type { Credential } from '@/lib/mockData'
 
 export default function CredentialsPage() {
+  const { t } = useTranslation()
   const { credentials, addCredential, updateCredential, deleteCredential } =
     useCredentials()
   const { addLog } = useAuditLogs()
@@ -71,7 +73,7 @@ export default function CredentialsPage() {
       (c) =>
         c.label.toLowerCase().includes(search.toLowerCase()) ||
         c.username.toLowerCase().includes(search.toLowerCase()) ||
-        c.tags.some((t) => t.toLowerCase().includes(search.toLowerCase())),
+        c.tags.some((tag) => tag.toLowerCase().includes(search.toLowerCase())),
     )
   }, [credentials, search])
 
@@ -99,9 +101,9 @@ export default function CredentialsPage() {
 
   function validateForm(): string[] {
     const errs: string[] = []
-    if (!formLabel.trim()) errs.push('ラベルは必須です。')
-    if (!formUsername.trim()) errs.push('ユーザー名は必須です。')
-    if (!editCred && !formSecret.trim()) errs.push('シークレットは必須です。')
+    if (!formLabel.trim()) errs.push(t('credentials.labelRequired'))
+    if (!formUsername.trim()) errs.push(t('credentials.usernameRequired'))
+    if (!editCred && !formSecret.trim()) errs.push(t('credentials.secretRequired'))
     return errs
   }
 
@@ -187,47 +189,47 @@ export default function CredentialsPage() {
         </Alert>
       )}
       <div className="flex flex-col gap-2">
-        <Label htmlFor="cred-label">ラベル (Label)</Label>
+        <Label htmlFor="cred-label">{t('credentials.label')}</Label>
         <Input
           id="cred-label"
           value={formLabel}
           onChange={(e) => setFormLabel(e.target.value)}
-          placeholder="例: Gmail-SMTP"
+          placeholder={t('credentials.labelPlaceholder')}
           disabled={readOnly}
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="cred-username">ユーザー名 (Username)</Label>
+        <Label htmlFor="cred-username">{t('credentials.username')}</Label>
         <Input
           id="cred-username"
           value={formUsername}
           onChange={(e) => setFormUsername(e.target.value)}
-          placeholder="例: team@openxxx.io"
+          placeholder={t('credentials.usernamePlaceholder')}
           disabled={readOnly}
         />
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="cred-secret">
-          パスワード / シークレット (Secret)
+          {t('credentials.secret')}
         </Label>
         <Input
           id="cred-secret"
           type="password"
           value={formSecret}
           onChange={(e) => setFormSecret(e.target.value)}
-          placeholder={editCred ? '変更する場合のみ入力' : 'シークレットを入力'}
+          placeholder={editCred ? t('credentials.secretEditPlaceholder') : t('credentials.secretPlaceholder')}
           disabled={readOnly}
         />
         <p className="text-[10px] text-muted-foreground">
-          保存後はマスクされた表示のみになります。(Masked after save)
+          {t('credentials.secretNote')}
         </p>
       </div>
       <div className="flex flex-col gap-2">
-        <Label>タグ (Tags)</Label>
+        <Label>{t('credentials.tags')}</Label>
         <ChipInput
           values={formTags}
           onChange={setFormTags}
-          placeholder="タグを入力して Enter"
+          placeholder={t('credentials.tagsPlaceholder')}
           disabled={readOnly}
         />
       </div>
@@ -236,7 +238,7 @@ export default function CredentialsPage() {
 
   return (
     <>
-      <DashboardHeader title="クレデンシャル" titleEn="Credentials Vault" />
+      <DashboardHeader title={t('credentials.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Header info */}
@@ -244,11 +246,11 @@ export default function CredentialsPage() {
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm">
                 <KeyRound className="size-4" />
-                クレデンシャル保管庫 (Credentials Vault)
-                <Badge variant="outline" className="text-[10px]">Frontend Demo</Badge>
+                {t('credentials.title')}
+                <Badge variant="outline" className="text-[10px]">{t('credentials.vaultBadge')}</Badge>
               </CardTitle>
               <CardDescription className="text-xs">
-                シークレットはUIではマスク表示されます。本番環境ではOS Keychainに保存されます。
+                {t('credentials.vaultDesc')}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -258,9 +260,9 @@ export default function CredentialsPage() {
             <CardContent className="flex items-center gap-3 py-3">
               <Shield className="size-5 shrink-0 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">推奨: macOS Keychain への保存 (将来対応)</p>
+                <p className="text-sm font-medium">{t('credentials.keychainTitle')}</p>
                 <p className="text-xs text-muted-foreground">
-                  本番環境では、シークレットをOSのセキュアストレージに保管することを推奨します。
+                  {t('credentials.keychainDesc')}
                 </p>
               </div>
             </CardContent>
@@ -273,14 +275,14 @@ export default function CredentialsPage() {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="検索 (Search)..."
+                placeholder={t('common.search')}
                 className="pl-8"
               />
             </div>
             {!readOnly && (
               <Button size="sm" onClick={openCreate}>
                 <Plus className="mr-1.5 size-4" />
-                新規登録
+                {t('credentials.registerNew')}
               </Button>
             )}
           </div>
@@ -290,18 +292,18 @@ export default function CredentialsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">ラベル (Label)</TableHead>
-                  <TableHead className="text-xs">ユーザー名</TableHead>
-                  <TableHead className="hidden text-xs sm:table-cell">タグ</TableHead>
-                  <TableHead className="hidden text-xs md:table-cell">最終使用</TableHead>
-                  <TableHead className="text-right text-xs">操作</TableHead>
+                  <TableHead className="text-xs">{t('credentials.label')}</TableHead>
+                  <TableHead className="text-xs">{t('credentials.username')}</TableHead>
+                  <TableHead className="hidden text-xs sm:table-cell">{t('credentials.tags')}</TableHead>
+                  <TableHead className="hidden text-xs md:table-cell">{t('credentials.lastUsed')}</TableHead>
+                  <TableHead className="text-right text-xs">{t('policies.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center text-sm text-muted-foreground">
-                      クレデンシャルが見つかりません。
+                      {t('credentials.noCredentials')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -311,9 +313,9 @@ export default function CredentialsPage() {
                     <TableCell className="font-mono text-xs">{c.username}</TableCell>
                     <TableCell className="hidden sm:table-cell">
                       <div className="flex flex-wrap gap-1">
-                        {c.tags.map((t) => (
-                          <Badge key={t} variant="secondary" className="text-[10px]">
-                            {t}
+                        {c.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-[10px]">
+                            {tag}
                           </Badge>
                         ))}
                       </div>
@@ -321,7 +323,7 @@ export default function CredentialsPage() {
                     <TableCell className="hidden text-xs text-muted-foreground md:table-cell">
                       {c.lastUsedAt
                         ? new Date(c.lastUsedAt).toLocaleDateString('ja-JP')
-                        : '未使用'}
+                        : t('common.unused')}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
@@ -330,7 +332,7 @@ export default function CredentialsPage() {
                           size="icon"
                           className="size-8"
                           onClick={() => setViewCred(c)}
-                          aria-label="詳細"
+                          aria-label={t('common.details')}
                         >
                           <Eye className="size-3.5" />
                         </Button>
@@ -341,7 +343,7 @@ export default function CredentialsPage() {
                               size="icon"
                               className="size-8"
                               onClick={() => openEdit(c)}
-                              aria-label="編集"
+                              aria-label={t('common.edit')}
                             >
                               <Pencil className="size-3.5" />
                             </Button>
@@ -350,7 +352,7 @@ export default function CredentialsPage() {
                               size="icon"
                               className="size-8 text-destructive"
                               onClick={() => setDeleteCred(c)}
-                              aria-label="削除"
+                              aria-label={t('common.delete')}
                             >
                               <Trash2 className="size-3.5" />
                             </Button>
@@ -370,18 +372,18 @@ export default function CredentialsPage() {
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>クレデンシャルを登録 (Create)</DialogTitle>
+            <DialogTitle>{t('credentials.createTitle')}</DialogTitle>
             <DialogDescription>
-              新しいクレデンシャルを保管庫に追加します。
+              {t('credentials.createDesc')}
             </DialogDescription>
           </DialogHeader>
           {credForm}
           {!readOnly && (
             <DialogFooter>
               <Button variant="outline" onClick={() => setCreateOpen(false)}>
-                キャンセル
+                {t('common.cancel')}
               </Button>
-              <Button onClick={handleCreate}>登録する</Button>
+              <Button onClick={handleCreate}>{t('common.register')}</Button>
             </DialogFooter>
           )}
         </DialogContent>
@@ -391,18 +393,18 @@ export default function CredentialsPage() {
       <Dialog open={!!editCred} onOpenChange={() => setEditCred(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>クレデンシャルを編集 (Edit)</DialogTitle>
+            <DialogTitle>{t('credentials.editTitle')}</DialogTitle>
             <DialogDescription>
-              既存のクレデンシャルを変更します。
+              {t('credentials.editDesc')}
             </DialogDescription>
           </DialogHeader>
           {credForm}
           {!readOnly && (
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditCred(null)}>
-                キャンセル
+                {t('common.cancel')}
               </Button>
-              <Button onClick={handleUpdate}>更新する</Button>
+              <Button onClick={handleUpdate}>{t('common.update')}</Button>
             </DialogFooter>
           )}
         </DialogContent>
@@ -413,16 +415,16 @@ export default function CredentialsPage() {
         <SheetContent className="sm:max-w-md">
           <SheetHeader>
             <SheetTitle>{viewCred?.label}</SheetTitle>
-            <SheetDescription>クレデンシャル詳細</SheetDescription>
+            <SheetDescription>{t('credentials.detailTitle')}</SheetDescription>
           </SheetHeader>
           {viewCred && (
             <div className="flex flex-col gap-4 px-4">
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">ラベル</span>
+                <span className="text-xs text-muted-foreground">{t('credentials.label')}</span>
                 <span className="text-sm font-medium">{viewCred.label}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">ユーザー名</span>
+                <span className="text-xs text-muted-foreground">{t('credentials.username')}</span>
                 <div className="flex items-center gap-2">
                   <code className="rounded bg-muted px-2 py-1 text-sm font-mono">
                     {viewCred.username}
@@ -432,14 +434,14 @@ export default function CredentialsPage() {
                     size="icon"
                     className="size-7"
                     onClick={() => copyToClipboard(viewCred.username)}
-                    aria-label="ユーザー名をコピー"
+                    aria-label={t('credentials.copyUsername')}
                   >
                     <Copy className="size-3.5" />
                   </Button>
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">シークレット</span>
+                <span className="text-xs text-muted-foreground">{t('credentials.secret')}</span>
                 <div className="flex items-center gap-2">
                   <code className="rounded bg-muted px-2 py-1 text-sm font-mono">
                     {viewCred.secretMasked}
@@ -449,26 +451,26 @@ export default function CredentialsPage() {
                     size="icon"
                     className="size-7"
                     onClick={() => setSecretWarningOpen(true)}
-                    aria-label="シークレットをコピー"
+                    aria-label={t('credentials.copySecret')}
                   >
                     <Copy className="size-3.5" />
                   </Button>
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-muted-foreground">タグ</span>
+                <span className="text-xs text-muted-foreground">{t('credentials.tags')}</span>
                 <div className="flex flex-wrap gap-1">
-                  {viewCred.tags.map((t) => (
-                    <Badge key={t} variant="secondary" className="text-[10px]">
-                      {t}
+                  {viewCred.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-[10px]">
+                      {tag}
                     </Badge>
                   ))}
                 </div>
               </div>
               <div className="flex flex-col gap-1 text-xs text-muted-foreground">
-                <span>作成: {new Date(viewCred.createdAt).toLocaleString('ja-JP')}</span>
+                <span>{t('credentials.created')}: {new Date(viewCred.createdAt).toLocaleString('ja-JP')}</span>
                 {viewCred.lastUsedAt && (
-                  <span>最終使用: {new Date(viewCred.lastUsedAt).toLocaleString('ja-JP')}</span>
+                  <span>{t('credentials.lastUsed')}: {new Date(viewCred.lastUsedAt).toLocaleString('ja-JP')}</span>
                 )}
               </div>
             </div>
@@ -482,15 +484,15 @@ export default function CredentialsPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-amber-600">
               <AlertTriangle className="size-5" />
-              シークレットコピーの警告
+              {t('credentials.secretCopyWarning')}
             </DialogTitle>
             <DialogDescription>
-              これはデモ環境です。実際のシークレットは保存されていません。本番環境では、シークレットのコピーは監査ログに記録されます。
+              {t('credentials.secretCopyWarningDesc')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setSecretWarningOpen(false)}>
-              閉じる
+              {t('common.close')}
             </Button>
             <Button
               onClick={() => {
@@ -498,7 +500,7 @@ export default function CredentialsPage() {
                 setSecretWarningOpen(false)
               }}
             >
-              コピーする (Demo)
+              {t('credentials.copyDemo')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -510,18 +512,18 @@ export default function CredentialsPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-destructive">
               <AlertTriangle className="size-5" />
-              クレデンシャルを削除
+              {t('credentials.deleteTitle')}
             </DialogTitle>
             <DialogDescription>
-              「{deleteCred?.label}」を削除します。この操作は取り消せません。ポリシーで参照されている場合、アクセスが失われる可能性があります。
+              {t('credentials.deleteDesc').replace('{label}', deleteCred?.label ?? '')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteCred(null)}>
-              キャンセル
+              {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
-              削除する
+              {t('common.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type KeyboardEvent } from 'react'
+import { useTranslation } from '@/lib/i18n'
 import { X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -13,6 +14,7 @@ interface ChipInputProps {
 }
 
 export function ChipInput({ values, onChange, placeholder, disabled }: ChipInputProps) {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -45,7 +47,7 @@ export function ChipInput({ values, onChange, placeholder, disabled }: ChipInput
               type="button"
               onClick={() => remove(val)}
               className="ml-0.5 rounded-full p-0.5 hover:bg-muted-foreground/20"
-              aria-label={`${val} を削除`}
+              aria-label={t('chipInput.removeLabel').replace('{value}', val)}
             >
               <X className="size-3" />
             </button>
