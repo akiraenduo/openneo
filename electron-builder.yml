@@ -12,9 +12,6 @@ mac:
     - target: dmg
       arch:
         - arm64
-    - target: pkg
-      arch:
-        - arm64
   icon: electron/icons/icon.icns
 dmg:
   title: "${productName}"
@@ -25,5 +22,3 @@ dmg:
       y: 220
       type: link
       path: /Applications
-pkg:
-  installLocation: /Applications
