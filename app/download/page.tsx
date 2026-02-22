@@ -37,8 +37,8 @@ export default function DownloadPage() {
   function handleDownload() {
     const url =
       modal === "dmg"
-        ? "/downloads/openxxx-latest.dmg"
-        : "/downloads/openxxx-latest.pkg"
+        ? "/downloads/OpenNeo-latest.dmg"
+        : "/downloads/OpenNeo-latest.pkg"
     setModal(null)
     // In production, replace with actual GitHub release URL
     const a = document.createElement("a")
@@ -176,8 +176,8 @@ export default function DownloadPage() {
           <div className="rounded-lg border border-border bg-secondary p-3">
             <code className="text-xs text-foreground font-mono break-all">
               {modal === "dmg"
-                ? "/downloads/openxxx-latest.dmg"
-                : "/downloads/openxxx-latest.pkg"}
+                ? "/downloads/OpenNeo-latest.dmg"
+                : "/downloads/OpenNeo-latest.pkg"}
             </code>
           </div>
           <DialogFooter>

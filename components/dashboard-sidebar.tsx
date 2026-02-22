@@ -135,7 +135,7 @@ export function DashboardSidebar() {
             <Lock className="size-4" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-tight">OpenXXX</span>
+            <span className="text-sm font-semibold tracking-tight">OpenNeo</span>
             <span className="text-[10px] text-muted-foreground">
               {t('sidebar.securityConsole')}
             </span>

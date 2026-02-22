@@ -47,13 +47,13 @@
     "monitor": "Monitor",
     "security": "Security",
     "securityConsole": "Security Console",
-    "version": "OpenXXX Security Console v0.1"
+    "version": "OpenNeo Security Console v0.1"
   },
   "footer": {
     "download": "Download",
     "dashboard": "Dashboard",
     "privacy": "Privacy",
-    "demoNotice": "OpenXXX is a frontend demo. No real data is collected."
+    "demoNotice": "OpenNeo is a frontend demo. No real data is collected."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -232,7 +232,7 @@
     "usernameRequired": "Username is required.",
     "secretRequired": "Secret is required.",
     "labelPlaceholder": "e.g.: Gmail-SMTP",
-    "usernamePlaceholder": "e.g.: team@openxxx.io"
+    "usernamePlaceholder": "e.g.: team@OpenNeo.io"
   },
   "requests": {
     "title": "Access Requests",
@@ -375,7 +375,7 @@
     "feature6Desc": "No data collection by default. All access is policy-controlled and logged in audit trails.",
     "howItWorks": "How it works",
     "howItWorksDesc": "Get started in 3 steps",
-    "step1Title": "Install OpenXXX",
+    "step1Title": "Install OpenNeo",
     "step1Desc": "Install on Apple Silicon Mac via DMG or PKG. Takes just a few minutes.",
     "step2Title": "Enable Open at Login (Optional)",
     "step2Desc": "Enable Open at Login and agents will automatically start when your Mac boots.",
@@ -393,7 +393,7 @@
     "downloadAppleSilicon": "Download for Apple Silicon"
   },
   "download": {
-    "title": "Download OpenXXX",
+    "title": "Download OpenNeo",
     "subtitle": "Compatible with Apple Silicon Macs running macOS 13.0+.",
     "dmgTitle": "Apple Silicon DMG",
     "downloadDmg": "Download DMG",
@@ -405,18 +405,18 @@
     "installInstructions": "Install Instructions",
     "dmgInstall": "Install via DMG",
     "dmgStep1": "Double-click the downloaded .dmg file to open it.",
-    "dmgStep2": "Drag and drop OpenXXX.app to the Applications folder.",
+    "dmgStep2": "Drag and drop OpenNeo.app to the Applications folder.",
     "dmgStep3": "Gatekeeper may show a warning on first launch.",
     "dmgStep4": "Go to System Settings > Privacy & Security and select \"Open Anyway\".",
     "pkgInstall": "Install via PKG",
     "pkgStep1": "Double-click the downloaded .pkg file to open it.",
     "pkgStep2": "Follow the installer instructions.",
     "pkgStep3": "You will be prompted for your administrator password.",
-    "pkgStep4": "After installation, launch OpenXXX from Applications.",
+    "pkgStep4": "After installation, launch OpenNeo from Applications.",
     "gatekeeperTitle": "About Gatekeeper",
     "gatekeeperDesc1": "macOS Gatekeeper may block apps from unidentified developers on first launch.",
     "gatekeeperDesc2": "Go to System Settings > Privacy & Security and select \"Open Anyway\", or right-click > \"Open\" to launch.",
-    "gatekeeperNotice": "OpenXXX is notarized. It is not malicious software.",
+    "gatekeeperNotice": "OpenNeo is notarized. It is not malicious software.",
     "releaseNotes": "Release Notes",
     "release1": "Official Apple Silicon support",
     "release2": "Improved Agent Task Manager performance",
@@ -429,24 +429,24 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "subtitle": "OpenXXX is designed with privacy as the top priority. Your data belongs to you.",
+    "subtitle": "OpenNeo is designed with privacy as the top priority. Your data belongs to you.",
     "principle1Title": "Local-first",
     "principle1Desc": "All data is stored on your Mac. No data is sent to external servers by default. Agent execution, model inference, and file access are all processed locally.",
     "principle2Title": "No Data Collection",
-    "principle2Desc": "OpenXXX does not collect or sell your data by default. Usage analytics and telemetry are opt-in and no information is sent externally unless enabled.",
+    "principle2Desc": "OpenNeo does not collect or sell your data by default. Usage analytics and telemetry are opt-in and no information is sent externally unless enabled.",
     "principle3Title": "Opt-in Diagnostics",
     "principle3Desc": "Diagnostic data submission for app improvement is completely opt-in. Only when explicitly enabled in settings will anonymized crash reports and basic usage statistics be sent.",
     "principle4Title": "Explicit Cloud Approval",
     "principle4Desc": "All connections to external APIs like Claude, GPT, etc. require explicit user approval. You can verify what data is sent to which service. Network control via policies is always enforced.",
     "faqTitle": "FAQ",
-    "faq1Q": "What data does OpenXXX store?",
+    "faq1Q": "What data does OpenNeo store?",
     "faq1A": "Agent settings, OKRs, execution logs, and policy configurations are stored locally. All data is on your Mac's file system and encrypted. Nothing is sent to external servers.",
     "faq2Q": "Is my data safe when using external LLMs (Claude, GPT, etc.)?",
     "faq2A": "Requests to external LLMs are subject to network policies and access controls. User approval is required before sending, and you can verify what data is sent. Please also check the external service's privacy policy separately.",
     "faq3Q": "What happens to my data when I uninstall?",
     "faq3A": "Deleting the application also removes all related local data. Credentials stored in macOS Keychain can be individually removed via Keychain Access.app.",
     "faq4Q": "Is it open source?",
-    "faq4A": "OpenXXX core components are planned for open source release. It has undergone security audits to ensure transparency. You can review the source code directly.",
+    "faq4A": "OpenNeo core components are planned for open source release. It has undergone security audits to ensure transparency. You can review the source code directly.",
     "faq5Q": "Can it meet additional security requirements for enterprise use?",
     "faq5A": "Policy management, Credentials Vault, and audit log features can meet enterprise compliance requirements. Policies are exportable in JSON format and can integrate with external audit tools."
   },

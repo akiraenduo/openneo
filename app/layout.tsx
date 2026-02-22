@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" })
 
 export const metadata: Metadata = {
-  title: 'OpenXXX - User-Owned Agent OS for macOS',
+  title: 'OpenNeo - User-Owned Agent OS for macOS',
   description: 'Local-first. Transparent. 24/7 autonomous agents with a Task Manager you can trust.',
   manifest: '/manifest.json',
 }
