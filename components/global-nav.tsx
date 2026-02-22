@@ -34,7 +34,7 @@ export function GlobalNav() {
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <Shield className="size-5 text-foreground" />
-            <span className="text-base font-semibold tracking-tight text-foreground">OpenXXX</span>
+            <span className="text-base font-semibold tracking-tight text-foreground">OpenNeo</span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">

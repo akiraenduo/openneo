@@ -1,6 +1,6 @@
 {
-  "name": "OpenXXX Security Console",
-  "short_name": "OpenXXX",
+  "name": "OpenNeo Security Console",
+  "short_name": "OpenNeo",
   "description": "Policy & Credentials management for AI agents",
   "start_url": "/dashboard",
   "display": "standalone",

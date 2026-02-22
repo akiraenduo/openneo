@@ -47,13 +47,13 @@
     "security": "安全性",
     "securityConsole": "Security Console",
     "system": "系統",
-    "version": "OpenXXX Security Console v0.1"
+    "version": "OpenNeo Security Console v0.1"
   },
   "footer": {
     "download": "Download",
     "dashboard": "Dashboard",
     "privacy": "Privacy",
-    "demoNotice": "OpenXXX 為前端展示版本，不會收集任何實際資料。"
+    "demoNotice": "OpenNeo 為前端展示版本，不會收集任何實際資料。"
   },
   "dashboard": {
     "title": "儀表板",
@@ -210,7 +210,7 @@
     "usernameRequired": "使用者名稱為必填。",
     "secretRequired": "機密資訊為必填。",
     "labelPlaceholder": "例：Gmail-SMTP",
-    "usernamePlaceholder": "例：team@openxxx.io"
+    "usernamePlaceholder": "例：team@OpenNeo.io"
   },
   "requests": {
     "title": "存取請求",
@@ -353,7 +353,7 @@
     "feature6Desc": "預設不收集任何資料。所有存取皆受政策控管並記錄於稽核日誌。",
     "howItWorks": "How it works",
     "howItWorksDesc": "3 個步驟即可開始",
-    "step1Title": "安裝 OpenXXX",
+    "step1Title": "安裝 OpenNeo",
     "step1Desc": "透過 DMG 或 PKG 安裝至 Apple Silicon Mac。只需幾分鐘即可完成。",
     "step2Title": "啟用登入時啟動（選用）",
     "step2Desc": "啟用 Open at Login 後，Mac 開機時代理程式將自動開始運作。",
@@ -371,7 +371,7 @@
     "downloadAppleSilicon": "Download for Apple Silicon"
   },
   "download": {
-    "title": "Download OpenXXX",
+    "title": "Download OpenNeo",
     "subtitle": "相容於 macOS 13.0 以上的 Apple Silicon Mac。",
     "dmgTitle": "Apple Silicon DMG",
     "downloadDmg": "Download DMG",
@@ -383,18 +383,18 @@
     "installInstructions": "安裝說明",
     "dmgInstall": "透過 DMG 安裝",
     "dmgStep1": "雙擊下載的 .dmg 檔案以開啟。",
-    "dmgStep2": "將 OpenXXX.app 拖曳至「應用程式」資料夾。",
+    "dmgStep2": "將 OpenNeo.app 拖曳至「應用程式」資料夾。",
     "dmgStep3": "首次啟動時，Gatekeeper 可能會顯示警告。",
     "dmgStep4": "前往「系統設定」>「隱私權與安全性」，選擇「強制開啟」。",
     "pkgInstall": "透過 PKG 安裝",
     "pkgStep1": "雙擊下載的 .pkg 檔案以開啟。",
     "pkgStep2": "依照安裝程式的指示進行操作。",
     "pkgStep3": "系統會要求輸入管理員密碼。",
-    "pkgStep4": "安裝完成後，從「應用程式」啟動 OpenXXX。",
+    "pkgStep4": "安裝完成後，從「應用程式」啟動 OpenNeo。",
     "gatekeeperTitle": "關於 Gatekeeper",
     "gatekeeperDesc1": "macOS 的 Gatekeeper 可能會在首次啟動時封鎖來自未識別開發者的應用程式。",
     "gatekeeperDesc2": "前往「系統設定」>「隱私權與安全性」選擇「強制開啟」，或右鍵點擊 >「開啟」來啟動。",
-    "gatekeeperNotice": "OpenXXX 已通過公證 (notarization)，並非惡意軟體。",
+    "gatekeeperNotice": "OpenNeo 已通過公證 (notarization)，並非惡意軟體。",
     "releaseNotes": "Release Notes",
     "release1": "正式支援 Apple Silicon",
     "release2": "改善 Agent Task Manager 效能",
@@ -407,24 +407,24 @@
   },
   "privacy": {
     "title": "隱私權政策",
-    "subtitle": "OpenXXX 以隱私權為最高優先原則進行設計。您的資料屬於您自己。",
+    "subtitle": "OpenNeo 以隱私權為最高優先原則進行設計。您的資料屬於您自己。",
     "principle1Title": "本機優先",
     "principle1Desc": "所有資料皆儲存於您的 Mac 上。預設不會將資料傳送至外部伺服器。代理程式的執行、模型推論及檔案存取皆在本機處理。",
     "principle2Title": "不收集資料",
-    "principle2Desc": "OpenXXX 預設不會收集或出售您的資料。使用狀況分析與遙測功能為選擇性加入，未啟用時不會對外傳送任何資訊。",
+    "principle2Desc": "OpenNeo 預設不會收集或出售您的資料。使用狀況分析與遙測功能為選擇性加入，未啟用時不會對外傳送任何資訊。",
     "principle3Title": "選擇性加入診斷",
     "principle3Desc": "為改善應用程式而提交診斷資料完全採用選擇性加入機制。僅在您於設定中明確啟用後，才會傳送匿名化的當機報告及基本使用統計。",
     "principle4Title": "外部模型呼叫的明確核准",
     "principle4Desc": "所有與 Claude、GPT 等外部 API 的連線皆需使用者明確核准。您可事先確認哪些資料會傳送至哪個服務。政策的網路控管始終生效。",
     "faqTitle": "常見問題 (FAQ)",
-    "faq1Q": "OpenXXX 會儲存哪些資料？",
+    "faq1Q": "OpenNeo 會儲存哪些資料？",
     "faq1A": "代理程式設定、OKR、執行日誌及政策設定會儲存於本機。所有資料位於您 Mac 的檔案系統上且經過加密，不會傳送至外部伺服器。",
     "faq2Q": "使用外部 LLM（Claude、GPT 等）時，我的資料安全嗎？",
     "faq2A": "對外部 LLM 的請求受網路政策與存取控制約束。傳送前需要使用者核准，且您可確認哪些資料將被傳送。請另行查閱外部服務的隱私權政策。",
     "faq3Q": "解除安裝後資料會如何處理？",
     "faq3A": "刪除應用程式時，所有相關的本機資料也會一併移除。儲存於 macOS Keychain 的憑證可透過 Keychain Access.app 個別刪除。",
     "faq4Q": "這是開源的嗎？",
-    "faq4A": "OpenXXX 的核心元件計畫以開源方式釋出。已通過安全稽核以確保透明性，您可直接檢閱原始碼。",
+    "faq4A": "OpenNeo 的核心元件計畫以開源方式釋出。已通過安全稽核以確保透明性，您可直接檢閱原始碼。",
     "faq5Q": "能否滿足企業使用的額外安全需求？",
     "faq5A": "政策管理、憑證保管庫及稽核日誌功能可滿足企業合規需求。政策可匯出為 JSON 格式，並可與外部稽核工具整合。"
   },

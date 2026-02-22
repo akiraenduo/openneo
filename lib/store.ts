@@ -74,7 +74,7 @@ function usePersistedState<T>(key: string, fallback: T) {
 
 export function useAgents() {
   const [agents, , hydrated] = usePersistedState<Agent[]>(
-    'openxxx-agents',
+    'OpenNeo-agents',
     defaultAgents,
   )
   return { agents, hydrated }
@@ -82,7 +82,7 @@ export function useAgents() {
 
 export function usePolicies() {
   const [policies, setPolicies, hydrated] = usePersistedState<Policy[]>(
-    'openxxx-policies',
+    'OpenNeo-policies',
     defaultPolicies,
   )
 
@@ -111,7 +111,7 @@ export function usePolicies() {
 
 export function useCredentials() {
   const [credentials, setCredentials, hydrated] = usePersistedState<Credential[]>(
-    'openxxx-credentials',
+    'OpenNeo-credentials',
     defaultCredentials,
   )
 
@@ -138,7 +138,7 @@ export function useCredentials() {
 
 export function useAccessRequests() {
   const [requests, setRequests, hydrated] = usePersistedState<AccessRequest[]>(
-    'openxxx-requests',
+    'OpenNeo-requests',
     defaultAccessRequests,
   )
 
@@ -155,7 +155,7 @@ export function useAccessRequests() {
 
 export function useAuditLogs() {
   const [logs, setLogs, hydrated] = usePersistedState<AuditLogEntry[]>(
-    'openxxx-audit-logs',
+    'OpenNeo-audit-logs',
     defaultAuditLogs,
   )
 
@@ -180,7 +180,7 @@ export function useAuditLogs() {
 
 export function useJobs() {
   const [jobs, setJobs, hydrated] = usePersistedState<Job[]>(
-    'openxxx-jobs',
+    'OpenNeo-jobs',
     defaultJobs,
   )
   return { jobs, setJobs, hydrated }
@@ -188,7 +188,7 @@ export function useJobs() {
 
 export function useModels() {
   const [models, , hydrated] = usePersistedState<LLMModel[]>(
-    'openxxx-models',
+    'OpenNeo-models',
     defaultModels,
   )
   return { models, hydrated }
@@ -196,7 +196,7 @@ export function useModels() {
 
 export function useNetworkDomains() {
   const [domains, setDomains, hydrated] = usePersistedState<NetworkDomain[]>(
-    'openxxx-network-domains',
+    'OpenNeo-network-domains',
     defaultNetworkDomains,
   )
 
@@ -225,7 +225,7 @@ export function useNetworkDomains() {
 
 export function useReadOnlyMode() {
   const [readOnly, setReadOnly, hydrated] = usePersistedState<boolean>(
-    'openxxx-readonly',
+    'OpenNeo-readonly',
     false,
   )
   return { readOnly, setReadOnly, hydrated }
