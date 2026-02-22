@@ -14,6 +14,7 @@ import { useStaticSystemInfo, useDynamicSystemInfo } from '@/hooks/use-system-in
 import { modelCatalog } from '@/lib/model-catalog'
 import { evaluateModelCompatibility, type CompatibilityStatus } from '@/lib/llm-compatibility'
 import { useTranslation } from '@/lib/i18n'
+import { DEV_STATIC_INFO, DEV_DYNAMIC_INFO } from '@/lib/dev-fallback'
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(0)} MB`
@@ -38,8 +39,8 @@ export default function ModelsPage() {
   const [contextLength, setContextLength] = useState(4096)
 
   // Fallback values for browser dev mode
-  const totalRAMBytes = staticInfo?.totalRAMBytes || 36 * 1024 * 1024 * 1024
-  const freeRAMBytes = dynamicInfo?.freeRAMBytes || 18.4 * 1024 * 1024 * 1024
+  const totalRAMBytes = staticInfo?.totalRAMBytes ?? DEV_STATIC_INFO.totalRAMBytes
+  const freeRAMBytes = dynamicInfo?.freeRAMBytes ?? DEV_DYNAMIC_INFO.freeRAMBytes
 
   const compatibility = evaluateModelCompatibility(
     modelCatalog,
@@ -83,11 +84,11 @@ export default function ModelsPage() {
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('models.chip')}</span>
-                  <span className="text-sm font-semibold">{staticInfo?.chipGeneration || 'M3 Pro'}</span>
+                  <span className="text-sm font-semibold">{staticInfo?.chipGeneration ?? DEV_STATIC_INFO.chipGeneration}</span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('models.gpuCores')}</span>
-                  <span className="text-sm font-semibold">{staticInfo?.gpuCores || 18}</span>
+                  <span className="text-sm font-semibold">{staticInfo?.gpuCores ?? DEV_STATIC_INFO.gpuCores}</span>
                 </div>
               </div>
             </CardContent>

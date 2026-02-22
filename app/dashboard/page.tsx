@@ -27,6 +27,7 @@ import { useStaticSystemInfo, useDynamicSystemInfo } from '@/hooks/use-system-in
 import { useBattery } from '@/hooks/use-battery'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n'
+import { DEV_STATIC_INFO } from '@/lib/dev-fallback'
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
@@ -53,7 +54,7 @@ export default function DashboardPage() {
   const totalCpu = agents.reduce((s, a) => s + a.cpuPercent, 0)
   const totalRam = agents.reduce((s, a) => s + a.ramMB, 0)
 
-  const totalRAMBytes = staticInfo?.totalRAMBytes || 36 * 1024 * 1024 * 1024
+  const totalRAMBytes = staticInfo?.totalRAMBytes ?? DEV_STATIC_INFO.totalRAMBytes
   const freeRAMBytes = dynamicInfo?.freeRAMBytes
   const usedRAMBytes = freeRAMBytes != null ? totalRAMBytes - freeRAMBytes : totalRam * 1024 * 1024
   const memUsedPercent = Math.min(Math.round((usedRAMBytes / totalRAMBytes) * 100), 100)
