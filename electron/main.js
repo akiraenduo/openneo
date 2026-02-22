@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, net } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const {
@@ -7,6 +7,25 @@ const {
   getProcessList,
   getBatteryInfo,
 } = require('./system-info')
+
+const MIME_TYPES = {
+  '.html': 'text/html',
+  '.css':  'text/css',
+  '.js':   'text/javascript',
+  '.json': 'application/json',
+  '.png':  'image/png',
+  '.jpg':  'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif':  'image/gif',
+  '.svg':  'image/svg+xml',
+  '.ico':  'image/x-icon',
+  '.woff':  'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf':   'font/ttf',
+  '.webp':  'image/webp',
+  '.txt':   'text/plain',
+  '.xml':   'application/xml',
+}
 
 // Register the custom scheme before app is ready
 protocol.registerSchemesAsPrivileged([
@@ -130,21 +149,31 @@ app.whenReady().then(() => {
   protocol.handle('app', (request) => {
     const url = new URL(request.url)
     let filePath = decodeURIComponent(url.pathname)
-
-    // Resolve to absolute path inside out/
     let absPath = path.join(outDir, filePath)
 
-    // If path is a directory, serve index.html inside it
     if (fs.existsSync(absPath) && fs.statSync(absPath).isDirectory()) {
       absPath = path.join(absPath, 'index.html')
     }
 
-    // If file doesn't exist and has no extension, try .html
     if (!fs.existsSync(absPath) && !path.extname(absPath)) {
       absPath = absPath + '.html'
     }
 
-    return net.fetch('file://' + absPath)
+    if (!fs.existsSync(absPath)) {
+      return new Response('Not Found', {
+        status: 404,
+        headers: { 'Content-Type': 'text/plain' },
+      })
+    }
+
+    const data = fs.readFileSync(absPath)
+    const ext = path.extname(absPath).toLowerCase()
+    const mimeType = MIME_TYPES[ext] || 'application/octet-stream'
+
+    return new Response(data, {
+      status: 200,
+      headers: { 'Content-Type': mimeType },
+    })
   })
 
   createWindow()
