@@ -100,8 +100,8 @@ Supported languages:
 
 | Code | Language |
 | --- | --- |
-| `en` | English |
-| `ja` | Japanese (default) |
+| `en` | English (default) |
+| `ja` | Japanese |
 | `zh-CN` | Simplified Chinese |
 | `zh-TW` | Traditional Chinese |
 
@@ -268,8 +268,8 @@ Web 版は Firebase App Hosting にデプロイされます。設定ファイル
 
 | コード | 言語 |
 | --- | --- |
-| `en` | 英語 |
-| `ja` | 日本語（デフォルト） |
+| `en` | 英語（デフォルト） |
+| `ja` | 日本語 |
 | `zh-CN` | 簡体字中国語 |
 | `zh-TW` | 繁体字中国語 |
 

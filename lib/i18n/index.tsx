@@ -9,7 +9,7 @@ import zhTW from './locales/zh-TW.json'
 export type Locale = 'en' | 'ja' | 'zh-CN' | 'zh-TW'
 
 const STORAGE_KEY = 'openneo-locale'
-const DEFAULT_LOCALE: Locale = 'ja'
+const DEFAULT_LOCALE: Locale = 'en'
 
 const dictionaries: Record<Locale, Record<string, unknown>> = {
   en,
