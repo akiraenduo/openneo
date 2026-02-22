@@ -19,7 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-import { Download, HardDrive, AlertTriangle } from "lucide-react"
+import { Download, HardDrive, Monitor, AlertTriangle } from "lucide-react"
 import { useTranslation } from "@/lib/i18n"
 import { RELEASE_VERSION, getDownloadUrl } from "@/lib/release-config"
 
@@ -55,9 +55,10 @@ export default function DownloadPage() {
           {t('download.subtitle')}
         </p>
 
-        {/* Download card */}
-        <div className="mt-10 flex justify-center">
-          <Card className="border-border w-full max-w-md">
+        {/* Download cards */}
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 max-w-2xl mx-auto">
+          {/* macOS */}
+          <Card className="border-border">
             <CardHeader className="flex flex-row items-center gap-3 pb-2">
               <div className="flex size-10 items-center justify-center rounded-lg bg-secondary">
                 <HardDrive className="size-5 text-foreground" />
@@ -75,6 +76,28 @@ export default function DownloadPage() {
                 <span>{t('download.size')}: <span className="text-foreground">185 MB</span></span>
                 <span className="font-mono break-all">SHA-256: e3b0c44298fc1c149afbf4c8996fb924...a3dc</span>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Windows (Coming Soon) */}
+          <Card className="border-border opacity-60">
+            <CardHeader className="flex flex-row items-center gap-3 pb-2">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-secondary">
+                <Monitor className="size-5 text-muted-foreground" />
+              </div>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-base text-muted-foreground">{t('download.windowsTitle')}</CardTitle>
+                <Badge variant="secondary" className="text-[10px]">{t('download.comingSoon')}</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+              <Button disabled className="w-full gap-2">
+                <Download className="size-4" />
+                {t('download.downloadWindows')}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                {t('download.windowsDesc')}
+              </p>
             </CardContent>
           </Card>
         </div>

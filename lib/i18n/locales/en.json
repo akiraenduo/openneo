@@ -396,6 +396,10 @@
     "subtitle": "Compatible with Apple Silicon Macs running macOS 13.0+.",
     "dmgTitle": "Apple Silicon DMG",
     "downloadAppleSilicon": "Download for Apple Silicon",
+    "windowsTitle": "Windows",
+    "downloadWindows": "Download for Windows",
+    "windowsDesc": "Windows support is currently under development. Stay tuned for updates.",
+    "comingSoon": "Coming Soon",
     "version": "Version",
     "macos": "macOS",
     "size": "Size",
@@ -416,7 +420,7 @@
     "release4": "Improved local LLM inference stability",
     "release5": "Added security policy export feature",
     "downloadConfirmTitle": "Download Confirmation",
-    "downloadConfirmDesc": "You will be redirected to GitHub Releases to download the installer.",
+    "downloadConfirmDesc": "The DMG installer will be downloaded from this URL.",
     "startDownload": "Start Download"
   },
   "privacy": {

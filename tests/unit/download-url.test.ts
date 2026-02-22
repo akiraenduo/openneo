@@ -1,15 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { getDownloadUrl, RELEASE_VERSION, GITHUB_REPO } from '@/lib/release-config'
+import { getDownloadUrl, RELEASE_VERSION } from '@/lib/release-config'
 
 describe('getDownloadUrl', () => {
   it('returns correct URL with default version', () => {
-    const expected = `https://github.com/${GITHUB_REPO}/releases/download/v${RELEASE_VERSION}/OpenNeo-${RELEASE_VERSION}-arm64.dmg`
-    expect(getDownloadUrl()).toBe(expected)
+    expect(getDownloadUrl()).toBe(`/downloads/OpenNeo-${RELEASE_VERSION}-arm64.dmg`)
   })
 
   it('returns URL with custom version', () => {
-    const url = getDownloadUrl('1.0.0')
-    expect(url).toBe(`https://github.com/${GITHUB_REPO}/releases/download/v1.0.0/OpenNeo-1.0.0-arm64.dmg`)
+    expect(getDownloadUrl('1.0.0')).toBe('/downloads/OpenNeo-1.0.0-arm64.dmg')
   })
 
   it('URL contains arm64 and .dmg', () => {

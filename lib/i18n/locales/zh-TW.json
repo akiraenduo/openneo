@@ -374,6 +374,10 @@
     "subtitle": "相容於 macOS 13.0 以上的 Apple Silicon Mac。",
     "dmgTitle": "Apple Silicon DMG",
     "downloadAppleSilicon": "Download for Apple Silicon",
+    "windowsTitle": "Windows",
+    "downloadWindows": "Download for Windows",
+    "windowsDesc": "Windows 支援目前正在開發中，敬請期待。",
+    "comingSoon": "Coming Soon",
     "version": "Version",
     "macos": "macOS",
     "size": "Size",
@@ -394,7 +398,7 @@
     "release4": "提升本機 LLM 推論穩定性",
     "release5": "新增安全政策匯出功能",
     "downloadConfirmTitle": "下載確認",
-    "downloadConfirmDesc": "將跳轉至 GitHub Releases 下載安裝程式。",
+    "downloadConfirmDesc": "將從以下 URL 下載 DMG 安裝程式。",
     "startDownload": "開始下載"
   },
   "privacy": {
