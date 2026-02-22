@@ -1,0 +1,29 @@
+appId: com.openneo.app
+productName: OpenNeo
+directories:
+  output: dist
+  buildResources: electron/icons
+files:
+  - electron/**/*
+  - out/**/*
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - arm64
+    - target: pkg
+      arch:
+        - arm64
+  icon: electron/icons/icon.icns
+dmg:
+  title: "${productName}"
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+pkg:
+  installLocation: /Applications

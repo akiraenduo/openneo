@@ -1,0 +1,9 @@
+{
+  "name": "OpenXXX Security Console",
+  "short_name": "OpenXXX",
+  "description": "Policy & Credentials management for AI agents",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
