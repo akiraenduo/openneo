@@ -7,6 +7,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  ...(process.env.ELECTRON_BUILD === 'true' && { output: 'export' }),
 }
 
 export default nextConfig

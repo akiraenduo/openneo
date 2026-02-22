@@ -1,11 +1,25 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, net } = require('electron')
 const path = require('path')
+const fs = require('fs')
 const {
   getStaticSystemInfo,
   getDynamicSystemInfo,
   getProcessList,
   getBatteryInfo,
 } = require('./system-info')
+
+// Register the custom scheme before app is ready
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'app',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+    },
+  },
+])
 
 let mainWindow = null
 let pollingInterval = null
@@ -26,7 +40,7 @@ function createWindow() {
     show: false,
   })
 
-  mainWindow.loadFile(path.join(__dirname, '..', 'out', 'index.html'))
+  mainWindow.loadURL('app://./')
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
@@ -111,6 +125,28 @@ ipcMain.on('system:stop-polling', () => {
 // ─── App Lifecycle ───
 
 app.whenReady().then(() => {
+  const outDir = path.join(__dirname, '..', 'out')
+
+  protocol.handle('app', (request) => {
+    const url = new URL(request.url)
+    let filePath = decodeURIComponent(url.pathname)
+
+    // Resolve to absolute path inside out/
+    let absPath = path.join(outDir, filePath)
+
+    // If path is a directory, serve index.html inside it
+    if (fs.existsSync(absPath) && fs.statSync(absPath).isDirectory()) {
+      absPath = path.join(absPath, 'index.html')
+    }
+
+    // If file doesn't exist and has no extension, try .html
+    if (!fs.existsSync(absPath) && !path.extname(absPath)) {
+      absPath = absPath + '.html'
+    }
+
+    return net.fetch('file://' + absPath)
+  })
+
   createWindow()
 
   app.on('activate', () => {

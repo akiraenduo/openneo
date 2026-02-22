@@ -39,6 +39,7 @@ const mockElectronAPI: ElectronAPI = {
   }),
 
   killProcess: async (pid: number) => {
+    if (pid === 1) return { success: false, error: 'Operation not permitted' }
     if (pid > 0) return { success: true }
     return { success: false, error: 'Invalid PID' }
   },
