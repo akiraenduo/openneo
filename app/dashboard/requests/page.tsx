@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { DashboardHeader } from '@/components/dashboard-header'
+import { useTranslation } from '@/lib/i18n'
 import {
   useAccessRequests,
   useAgents,
@@ -48,25 +49,14 @@ import {
 } from 'lucide-react'
 import type { AccessRequest, Policy } from '@/lib/mockData'
 
-const typeLabels: Record<string, string> = {
-  file: 'ファイル',
-  network: 'ネットワーク',
-  credential: 'クレデンシャル',
-}
-
 const typeIcons: Record<string, typeof FolderOpen> = {
   file: FolderOpen,
   network: Globe,
   credential: KeyRound,
 }
 
-const statusLabels: Record<string, string> = {
-  pending: '保留中',
-  approved: '承認済み',
-  denied: '拒否済み',
-}
-
 export default function RequestsPage() {
+  const { t } = useTranslation()
   const { requests, updateRequest } = useAccessRequests()
   const { agents } = useAgents()
   const { policies, updatePolicy } = usePolicies()
@@ -77,6 +67,18 @@ export default function RequestsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'denied'>('all')
   const [alwaysAllowReq, setAlwaysAllowReq] = useState<AccessRequest | null>(null)
   const [selectedPolicyId, setSelectedPolicyId] = useState('')
+
+  const typeLabels: Record<string, string> = {
+    file: t('requests.file'),
+    network: t('requests.network'),
+    credential: t('requests.credential'),
+  }
+
+  const statusLabels: Record<string, string> = {
+    pending: t('requests.pending'),
+    approved: t('requests.approved'),
+    denied: t('requests.denied'),
+  }
 
   const filtered = useMemo(() => {
     return requests.filter((r) => {
@@ -177,11 +179,11 @@ export default function RequestsPage() {
     const agent = getAgentName(req.agentId)
     switch (req.type) {
       case 'file':
-        return `エージェント「${agent}」が ${req.resource} を ${req.action} しようとしています`
+        return t('requests.descFile').replace('{agent}', agent).replace('{resource}', req.resource).replace('{action}', req.action)
       case 'credential':
-        return `エージェント「${agent}」がクレデンシャル「${req.resource}」を使用しようとしています`
+        return t('requests.descCredential').replace('{agent}', agent).replace('{resource}', req.resource)
       case 'network':
-        return `エージェント「${agent}」が ${req.resource} にアクセスしようとしています`
+        return t('requests.descNetwork').replace('{agent}', agent).replace('{resource}', req.resource)
       default:
         return req.resource
     }
@@ -233,7 +235,7 @@ export default function RequestsPage() {
                 onClick={() => handleApprove(req)}
               >
                 <Check className="mr-1 size-3" />
-                承認
+                {t('common.approve')}
               </Button>
               <Button
                 size="sm"
@@ -242,7 +244,7 @@ export default function RequestsPage() {
                 onClick={() => handleDeny(req)}
               >
                 <X className="mr-1 size-3" />
-                拒否
+                {t('common.deny')}
               </Button>
               <Button
                 size="sm"
@@ -254,7 +256,7 @@ export default function RequestsPage() {
                 }}
               >
                 <ShieldPlus className="mr-1 size-3" />
-                常時許可
+                {t('requests.alwaysAllow')}
               </Button>
             </div>
           )}
@@ -270,7 +272,7 @@ export default function RequestsPage() {
 
   return (
     <>
-      <DashboardHeader title="アクセス要求" titleEn="Access Requests" />
+      <DashboardHeader title={t('requests.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Toolbar */}
@@ -280,7 +282,7 @@ export default function RequestsPage() {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="検索 (Search)..."
+                placeholder={t('common.search')}
                 className="pl-8"
               />
             </div>
@@ -294,10 +296,10 @@ export default function RequestsPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">全て</SelectItem>
-                <SelectItem value="pending">保留中</SelectItem>
-                <SelectItem value="approved">承認済み</SelectItem>
-                <SelectItem value="denied">拒否済み</SelectItem>
+                <SelectItem value="all">{t('common.all')}</SelectItem>
+                <SelectItem value="pending">{t('requests.pending')}</SelectItem>
+                <SelectItem value="approved">{t('requests.approved')}</SelectItem>
+                <SelectItem value="denied">{t('requests.denied')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -305,10 +307,10 @@ export default function RequestsPage() {
           <Tabs defaultValue="pending">
             <TabsList>
               <TabsTrigger value="pending">
-                保留中 ({pending.length})
+                {`${t('requests.pending')} (${pending.length})`}
               </TabsTrigger>
               <TabsTrigger value="resolved">
-                処理済み ({resolved.length})
+                {`${t('requests.resolved')} (${resolved.length})`}
               </TabsTrigger>
             </TabsList>
 
@@ -317,16 +319,16 @@ export default function RequestsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-xs">リクエスト</TableHead>
-                      <TableHead className="text-xs">ステータス</TableHead>
-                      <TableHead className="text-xs">アクション</TableHead>
+                      <TableHead className="text-xs">{t('requests.request')}</TableHead>
+                      <TableHead className="text-xs">{t('requests.status')}</TableHead>
+                      <TableHead className="text-xs">{t('requests.action')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {pending.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={3} className="h-24 text-center text-sm text-muted-foreground">
-                          保留中の要求はありません。
+                          {t('requests.noPending')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -341,16 +343,16 @@ export default function RequestsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-xs">リクエスト</TableHead>
-                      <TableHead className="text-xs">ステータス</TableHead>
-                      <TableHead className="text-xs">判定日時</TableHead>
+                      <TableHead className="text-xs">{t('requests.request')}</TableHead>
+                      <TableHead className="text-xs">{t('requests.status')}</TableHead>
+                      <TableHead className="text-xs">{t('requests.decisionTime')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {resolved.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={3} className="h-24 text-center text-sm text-muted-foreground">
-                          処理済みの要求はありません。
+                          {t('requests.noResolved')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -369,10 +371,10 @@ export default function RequestsPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ShieldPlus className="size-5" />
-              常時許可 (Always Allow)
+              {t('requests.alwaysAllow')}
             </DialogTitle>
             <DialogDescription>
-              このリソースをポリシーの許可リストに追加します。今後のリクエストは自動的に許可されます。
+              {t('requests.alwaysAllowDesc')}
             </DialogDescription>
           </DialogHeader>
           {alwaysAllowReq && (
@@ -380,17 +382,17 @@ export default function RequestsPage() {
               <div className="rounded-md border p-3">
                 <p className="text-sm">{requestDescription(alwaysAllowReq)}</p>
                 <p className="mt-1 font-mono text-xs text-muted-foreground">
-                  リソース: {alwaysAllowReq.resource}
+                  {t('requests.resource')} {alwaysAllowReq.resource}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <Label>追加先ポリシー (Target Policy)</Label>
+                <Label>{t('requests.targetPolicy')}</Label>
                 <Select
                   value={selectedPolicyId}
                   onValueChange={setSelectedPolicyId}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="ポリシーを選択" />
+                    <SelectValue placeholder={t('requests.selectPolicy')} />
                   </SelectTrigger>
                   <SelectContent>
                     {policies
@@ -407,10 +409,10 @@ export default function RequestsPage() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setAlwaysAllowReq(null)}>
-              キャンセル
+              {t('common.cancel')}
             </Button>
             <Button onClick={handleAlwaysAllow} disabled={!selectedPolicyId}>
-              ポリシーに追加して承認
+              {t('requests.addToPolicyAndApprove')}
             </Button>
           </DialogFooter>
         </DialogContent>

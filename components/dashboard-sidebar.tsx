@@ -13,6 +13,7 @@ import {
   ListTodo,
   Cpu,
   Globe,
+  Monitor,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -28,64 +29,61 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar'
 import { useAccessRequests } from '@/lib/store'
+import { useTranslation } from '@/lib/i18n'
 
 const monitorItems = [
   {
     href: '/dashboard',
-    label: '概要',
-    labelEn: 'Overview',
+    label: 'sidebar.overview',
     icon: LayoutDashboard,
     exact: true,
   },
   {
     href: '/dashboard/agents',
-    label: 'エージェント',
-    labelEn: 'Agents',
+    label: 'sidebar.agents',
     icon: Bot,
   },
   {
     href: '/dashboard/jobs',
-    label: 'ジョブ',
-    labelEn: 'Jobs',
+    label: 'sidebar.jobs',
     icon: ListTodo,
   },
   {
     href: '/dashboard/models',
-    label: 'モデル',
-    labelEn: 'Models',
+    label: 'sidebar.models',
     icon: Cpu,
   },
   {
     href: '/dashboard/network',
-    label: 'ネットワーク',
-    labelEn: 'Network',
+    label: 'sidebar.network',
     icon: Globe,
+  },
+  {
+    href: '/dashboard/system',
+    label: 'sidebar.system',
+    icon: Monitor,
   },
 ]
 
 const securityItems = [
   {
     href: '/dashboard/policies',
-    label: 'ポリシー',
-    labelEn: 'Policies',
+    label: 'sidebar.policies',
     icon: ShieldCheck,
   },
   {
     href: '/dashboard/credentials',
-    label: 'クレデンシャル',
-    labelEn: 'Credentials Vault',
+    label: 'sidebar.credentials',
     icon: KeyRound,
   },
   {
     href: '/dashboard/requests',
-    label: 'アクセス要求',
-    labelEn: 'Access Requests',
+    label: 'sidebar.requests',
     icon: FileWarning,
   },
   {
     href: '/dashboard/audit',
-    label: '監査ログ',
-    labelEn: 'Audit Logs',
+    label: 'sidebar.audit',
     icon: ScrollText,
   },
 ]
@@ -94,6 +92,7 @@ export function DashboardSidebar() {
   const pathname = usePathname()
   const { requests } = useAccessRequests()
   const pendingCount = requests.filter((r) => r.status === 'pending').length
+  const { t } = useTranslation()
 
   function isActive(href: string, exact?: boolean) {
     if (exact) return pathname === href
@@ -107,10 +106,10 @@ export function DashboardSidebar() {
           const active = isActive(item.href, 'exact' in item ? item.exact : false)
           return (
             <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton asChild isActive={active} tooltip={item.labelEn}>
+              <SidebarMenuButton asChild isActive={active} tooltip={t(item.label)}>
                 <Link href={item.href}>
                   <item.icon className="size-4" />
-                  <span>{item.label}</span>
+                  <span>{t(item.label)}</span>
                 </Link>
               </SidebarMenuButton>
               {item.href === '/dashboard/requests' && pendingCount > 0 && (
@@ -138,20 +137,20 @@ export function DashboardSidebar() {
           <div className="flex flex-col">
             <span className="text-sm font-semibold tracking-tight">OpenXXX</span>
             <span className="text-[10px] text-muted-foreground">
-              Security Console
+              {t('sidebar.securityConsole')}
             </span>
           </div>
         </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>モニター (Monitor)</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('sidebar.monitor')}</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderItems(monitorItems)}
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>セキュリティ (Security)</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('sidebar.security')}</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderItems(securityItems)}
           </SidebarGroupContent>
@@ -159,7 +158,7 @@ export function DashboardSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <div className="px-2 py-2 text-[10px] text-muted-foreground">
-          OpenXXX Security Console v0.1
+          {t('sidebar.version')}
         </div>
       </SidebarFooter>
     </Sidebar>

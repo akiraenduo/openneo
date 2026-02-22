@@ -3,8 +3,11 @@
 import { GlobalNav } from "@/components/global-nav"
 import Link from "next/link"
 import { Shield } from "lucide-react"
+import { useTranslation } from "@/lib/i18n"
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation()
+
   return (
     <div className="flex min-h-screen flex-col">
       <GlobalNav />
@@ -16,12 +19,12 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             <span className="text-sm font-medium">OpenXXX</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-            <Link href="/download" className="hover:text-foreground transition-colors">Download</Link>
-            <Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
-            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+            <Link href="/download" className="hover:text-foreground transition-colors">{t('footer.download')}</Link>
+            <Link href="/dashboard" className="hover:text-foreground transition-colors">{t('footer.dashboard')}</Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">{t('footer.privacy')}</Link>
           </nav>
           <p className="text-xs text-muted-foreground">
-            OpenXXX is a frontend demo. No real data is collected.
+            {t('footer.demoNotice')}
           </p>
         </div>
       </footer>

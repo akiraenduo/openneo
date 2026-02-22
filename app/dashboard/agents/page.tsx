@@ -24,20 +24,10 @@ import {
   Activity,
 } from 'lucide-react'
 import type { Agent } from '@/lib/mockData'
-
-const statusConfig: Record<Agent['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' }> = {
-  running: { label: '実行中', variant: 'default' },
-  idle: { label: '待機中', variant: 'secondary' },
-  blocked: { label: 'ブロック', variant: 'destructive' },
-}
-
-const networkConfig: Record<Agent['network'], { label: string; color: string }> = {
-  local: { label: 'ローカル', color: 'text-muted-foreground' },
-  approved: { label: '承認済み', color: 'text-foreground' },
-  blocked: { label: 'ブロック', color: 'text-destructive' },
-}
+import { useTranslation } from '@/lib/i18n'
 
 export default function AgentsPage() {
+  const { t } = useTranslation()
   const { agents } = useAgents()
   const [viewAgent, setViewAgent] = useState<Agent | null>(null)
 
@@ -45,34 +35,46 @@ export default function AgentsPage() {
   const totalCpu = agents.reduce((sum, a) => sum + a.cpuPercent, 0)
   const totalRam = agents.reduce((sum, a) => sum + a.ramMB, 0)
 
+  const statusConfig: Record<Agent['status'], { label: string; variant: 'default' | 'secondary' | 'destructive' }> = {
+    running: { label: t('agents.running'), variant: 'default' },
+    idle: { label: t('agents.idle'), variant: 'secondary' },
+    blocked: { label: t('agents.blocked'), variant: 'destructive' },
+  }
+
+  const networkConfig: Record<Agent['network'], { label: string; color: string }> = {
+    local: { label: t('agents.networkLocal'), color: 'text-muted-foreground' },
+    approved: { label: t('agents.networkApproved'), color: 'text-foreground' },
+    blocked: { label: t('agents.networkBlocked'), color: 'text-destructive' },
+  }
+
   return (
     <>
-      <DashboardHeader title="エージェント" titleEn="Agents" />
+      <DashboardHeader title={t('agents.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Summary cards */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">合計エージェント</span>
+                <span className="text-xs text-muted-foreground">{t('agents.totalAgents')}</span>
                 <span className="text-2xl font-bold">{agents.length}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">実行中</span>
+                <span className="text-xs text-muted-foreground">{t('agents.running')}</span>
                 <span className="text-2xl font-bold">{running}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">CPU 合計</span>
+                <span className="text-xs text-muted-foreground">{t('agents.totalCpu')}</span>
                 <span className="text-2xl font-bold">{totalCpu.toFixed(1)}%</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">RAM 合計</span>
+                <span className="text-xs text-muted-foreground">{t('agents.totalRam')}</span>
                 <span className="text-2xl font-bold">{totalRam} MB</span>
               </CardContent>
             </Card>
@@ -149,7 +151,7 @@ export default function AgentsPage() {
                       onClick={() => setViewAgent(agent)}
                     >
                       <Eye className="mr-1.5 size-3.5" />
-                      詳細を表示
+                      {t('agents.viewDetails')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -177,14 +179,14 @@ export default function AgentsPage() {
                 </Badge>
                 <Badge variant="outline">{networkConfig[viewAgent.network].label}</Badge>
                 {viewAgent.openAtLogin && (
-                  <Badge variant="secondary" className="text-[10px]">ログイン時起動</Badge>
+                  <Badge variant="secondary" className="text-[10px]">{t('agents.openAtLogin')}</Badge>
                 )}
               </div>
 
               <Separator />
 
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium">リソース使用状況</span>
+                <span className="text-xs font-medium">{t('agents.resourceUsage')}</span>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -206,7 +208,7 @@ export default function AgentsPage() {
               <Separator />
 
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium">スキル (Skills)</span>
+                <span className="text-xs font-medium">{t('agents.skills')}</span>
                 <div className="flex flex-wrap gap-1">
                   {viewAgent.skills.map((skill) => (
                     <Badge key={skill} variant="outline" className="text-xs">
@@ -217,7 +219,7 @@ export default function AgentsPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium">権限 (Permissions)</span>
+                <span className="text-xs font-medium">{t('agents.permissions')}</span>
                 <div className="flex flex-wrap gap-1">
                   {viewAgent.permissions.map((perm) => (
                     <Badge key={perm} variant="secondary" className="text-xs">
@@ -232,7 +234,7 @@ export default function AgentsPage() {
               <div className="flex flex-col gap-2">
                 <span className="text-xs font-medium flex items-center gap-1.5">
                   <Activity className="size-3.5" />
-                  最近のアクション
+                  {t('agents.recentActions')}
                 </span>
                 <div className="flex flex-col gap-2">
                   {viewAgent.recentActions.map((action, i) => (

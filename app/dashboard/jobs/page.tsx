@@ -8,17 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { ListTodo, Play, Clock, CheckCircle2, XCircle, Filter } from "lucide-react"
+import { useTranslation } from "@/lib/i18n"
 
 type JobFilter = "all" | "queued" | "running" | "completed" | "failed"
 
-const statusConfig = {
-  queued: { label: "待機中", icon: Clock, variant: "secondary" as const, color: "text-muted-foreground" },
-  running: { label: "実行中", icon: Play, variant: "default" as const, color: "text-foreground" },
-  completed: { label: "完了", icon: CheckCircle2, variant: "secondary" as const, color: "text-foreground" },
-  failed: { label: "失敗", icon: XCircle, variant: "destructive" as const, color: "text-destructive" },
-}
-
 export default function JobsPage() {
+  const { t } = useTranslation()
   const { jobs } = useJobs()
   const [filter, setFilter] = useState<JobFilter>("all")
 
@@ -31,42 +26,49 @@ export default function JobsPage() {
     failed: jobs.filter((j) => j.status === "failed").length,
   }
 
+  const statusConfig = {
+    queued: { label: t("jobs.queued"), icon: Clock, variant: "secondary" as const, color: "text-muted-foreground" },
+    running: { label: t("jobs.running"), icon: Play, variant: "default" as const, color: "text-foreground" },
+    completed: { label: t("jobs.completed"), icon: CheckCircle2, variant: "secondary" as const, color: "text-foreground" },
+    failed: { label: t("jobs.failed"), icon: XCircle, variant: "destructive" as const, color: "text-destructive" },
+  }
+
   const filters: { value: JobFilter; label: string }[] = [
-    { value: "all", label: `すべて (${counts.all})` },
-    { value: "running", label: `実行中 (${counts.running})` },
-    { value: "queued", label: `待機中 (${counts.queued})` },
-    { value: "completed", label: `完了 (${counts.completed})` },
-    { value: "failed", label: `失敗 (${counts.failed})` },
+    { value: "all", label: `${t("common.all")} (${counts.all})` },
+    { value: "running", label: `${t("jobs.running")} (${counts.running})` },
+    { value: "queued", label: `${t("jobs.queued")} (${counts.queued})` },
+    { value: "completed", label: `${t("jobs.completed")} (${counts.completed})` },
+    { value: "failed", label: `${t("jobs.failed")} (${counts.failed})` },
   ]
 
   return (
     <>
-      <DashboardHeader title="ジョブ" titleEn="Jobs" />
+      <DashboardHeader title={t("jobs.title")} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Summary cards */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">合計ジョブ</span>
+                <span className="text-xs text-muted-foreground">{t("jobs.totalJobs")}</span>
                 <span className="text-2xl font-bold">{jobs.length}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">実行中</span>
+                <span className="text-xs text-muted-foreground">{t("jobs.running")}</span>
                 <span className="text-2xl font-bold">{counts.running}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">待機中</span>
+                <span className="text-xs text-muted-foreground">{t("jobs.queued")}</span>
                 <span className="text-2xl font-bold">{counts.queued}</span>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="flex flex-col gap-1 p-4">
-                <span className="text-xs text-muted-foreground">失敗</span>
+                <span className="text-xs text-muted-foreground">{t("jobs.failed")}</span>
                 <span className="text-2xl font-bold text-destructive">{counts.failed}</span>
               </CardContent>
             </Card>
@@ -93,7 +95,7 @@ export default function JobsPage() {
             {filtered.length === 0 && (
               <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed p-10 text-muted-foreground">
                 <ListTodo className="size-8" />
-                <span className="text-sm">該当するジョブがありません</span>
+                <span className="text-sm">{t("jobs.noJobs")}</span>
               </div>
             )}
             {filtered.map((job) => {

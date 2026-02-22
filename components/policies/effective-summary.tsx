@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FolderOpen, KeyRound, Globe, ShieldAlert } from 'lucide-react'
@@ -12,6 +13,7 @@ export function EffectivePolicySummary({
   policies: Policy[]
   credentials: Credential[]
 }) {
+  const { t } = useTranslation()
   const enabled = policies.filter((p) => p.enabled)
 
   // Aggregate file paths
@@ -62,7 +64,7 @@ export function EffectivePolicySummary({
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-sm">
           <ShieldAlert className="size-4" />
-          有効ポリシーサマリー (Effective Policy Summary)
+          {t('effectiveSummary.title')}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -71,18 +73,18 @@ export function EffectivePolicySummary({
           <div className="flex flex-col gap-2 rounded-md border bg-background p-3">
             <div className="flex items-center gap-2 text-xs font-medium">
               <FolderOpen className="size-3.5" />
-              ファイルアクセス (File Access)
+              {t('effectiveSummary.fileAccess')}
             </div>
             <Badge variant="outline" className="w-fit text-[10px]">
               {fileMode === 'allowlist'
-                ? '許可リスト'
+                ? t('effectiveSummary.allowlist')
                 : fileMode === 'denylist'
-                  ? '拒否リスト'
-                  : '混合'}
+                  ? t('effectiveSummary.denylist')
+                  : t('effectiveSummary.mixed')}
             </Badge>
             {allAllowedPaths.size > 0 && (
               <div className="flex flex-col gap-1">
-                <span className="text-[10px] text-muted-foreground">許可パス:</span>
+                <span className="text-[10px] text-muted-foreground">{t('effectiveSummary.allowedPaths')}</span>
                 {Array.from(allAllowedPaths).map((p) => (
                   <code
                     key={p}
@@ -99,7 +101,7 @@ export function EffectivePolicySummary({
           <div className="flex flex-col gap-2 rounded-md border bg-background p-3">
             <div className="flex items-center gap-2 text-xs font-medium">
               <KeyRound className="size-3.5" />
-              クレデンシャル (Credentials)
+              {t('effectiveSummary.credentials')}
             </div>
             <Badge
               variant="outline"
@@ -110,20 +112,20 @@ export function EffectivePolicySummary({
               }`}
             >
               {credMode === 'onlyRegistered'
-                ? '登録済みのみ'
+                ? t('effectiveSummary.onlyRegistered')
                 : credMode === 'allowNone'
-                  ? '使用不可'
-                  : '全て許可 (危険)'}
+                  ? t('effectiveSummary.allowNone')
+                  : t('effectiveSummary.allowAllDanger')}
             </Badge>
             <span className="text-[10px] text-muted-foreground">
-              許可: {allowedCredLabels.length} 件
+              {t('effectiveSummary.allowedCount').replace('{count}', String(allowedCredLabels.length))}
               {allowedCredLabels.length > 0 && (
                 <> ({allowedCredLabels.join(', ')})</>
               )}
             </span>
             {credApproval && (
               <span className="text-[10px] text-amber-600">
-                使用時に承認が必要
+                {t('effectiveSummary.approvalRequired')}
               </span>
             )}
           </div>
@@ -132,7 +134,7 @@ export function EffectivePolicySummary({
           <div className="flex flex-col gap-2 rounded-md border bg-background p-3">
             <div className="flex items-center gap-2 text-xs font-medium">
               <Globe className="size-3.5" />
-              ネットワーク (Network)
+              {t('effectiveSummary.network')}
             </div>
             <Badge
               variant="outline"
@@ -143,10 +145,10 @@ export function EffectivePolicySummary({
               }`}
             >
               {netMode === 'allowlist'
-                ? '許可リスト'
+                ? t('effectiveSummary.netAllowlist')
                 : netMode === 'blockAll'
-                  ? '全てブロック'
-                  : '全て許可 (危険)'}
+                  ? t('effectiveSummary.netBlockAll')
+                  : t('effectiveSummary.netAllowAllDanger')}
             </Badge>
             {allDomains.size > 0 && (
               <div className="flex flex-wrap gap-1">
@@ -162,7 +164,7 @@ export function EffectivePolicySummary({
             )}
             {netApproval && (
               <span className="text-[10px] text-amber-600">
-                外部リクエスト時に承認が必要
+                {t('effectiveSummary.netApprovalRequired')}
               </span>
             )}
           </div>
