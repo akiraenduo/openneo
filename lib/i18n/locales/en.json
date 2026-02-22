@@ -357,7 +357,7 @@
     "subtitle": "User-Owned Agent OS for macOS",
     "description": "Local-first. Transparent. 24/7 autonomous agents with a Task Manager you can trust.",
     "downloadAppleSilicon": "Download for Apple Silicon",
-    "systemReq": "macOS 13.0+ \u00b7 Apple Silicon \u00b7 v0.8.0",
+    "systemReq": "macOS 13.0+ \u00b7 Apple Silicon \u00b7 v0.1.0",
     "features": "Features",
     "featuresDesc": "Secure local-first agent management",
     "feature1Title": "Agent Task Manager",
