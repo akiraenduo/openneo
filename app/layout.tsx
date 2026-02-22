@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { LocaleProvider } from '@/lib/i18n'
 import './globals.css'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -24,9 +25,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ja" className={`${inter.variable} ${jetbrainsMono.variable} bg-background`}>
+    <html lang="ja" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   )

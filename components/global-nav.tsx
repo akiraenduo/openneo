@@ -3,20 +3,28 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Menu, X, Download, Shield } from "lucide-react"
+import { Menu, X, Download, Shield, Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { useLocale, allLocales, localeNames } from "@/lib/i18n"
 
 const navLinks = [
-  { href: "/download", label: "Download" },
-  { href: "/dashboard", label: "Dashboard (Demo)" },
-  { href: "/privacy", label: "Privacy" },
+  { href: "/download", labelKey: "nav.download" },
+  { href: "/dashboard", labelKey: "nav.dashboardDemo" },
+  { href: "/privacy", labelKey: "nav.privacy" },
 ]
 
 export function GlobalNav() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const isDashboard = pathname.startsWith("/dashboard")
+  const { locale, setLocale, t } = useLocale()
 
   if (isDashboard) return null
 
@@ -41,18 +49,33 @@ export function GlobalNav() {
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
               >
-                {l.label}
+                {t(l.labelKey)}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-2 md:flex">
             <Button asChild size="sm" className="gap-1.5">
               <Link href="/download">
                 <Download className="size-3.5" />
-                Download for Apple Silicon
+                {t('nav.downloadAppleSilicon')}
               </Link>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+                  <Languages className="size-3.5" />
+                  {locale.toUpperCase()}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {allLocales.map((l) => (
+                  <DropdownMenuItem key={l} onClick={() => setLocale(l)} className={locale === l ? 'bg-accent' : ''}>
+                    {localeNames[l]}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <button
@@ -79,7 +102,7 @@ export function GlobalNav() {
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
-                  {l.label}
+                  {t(l.labelKey)}
                 </Link>
               ))}
             </nav>
@@ -87,7 +110,7 @@ export function GlobalNav() {
               <Button asChild size="sm" className="w-full gap-1.5">
                 <Link href="/download" onClick={() => setOpen(false)}>
                   <Download className="size-3.5" />
-                  Download for Apple Silicon
+                  {t('nav.downloadAppleSilicon')}
                 </Link>
               </Button>
             </div>

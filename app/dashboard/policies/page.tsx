@@ -5,6 +5,7 @@ import { DashboardHeader } from '@/components/dashboard-header'
 import { EffectivePolicySummary } from '@/components/policies/effective-summary'
 import { PolicyForm } from '@/components/policies/policy-form'
 import { PolicyDetailDrawer } from '@/components/policies/policy-detail-drawer'
+import { useTranslation } from '@/lib/i18n'
 import { usePolicies, useCredentials, useAgents, useAuditLogs, useReadOnlyMode } from '@/lib/store'
 import {
   Table,
@@ -43,6 +44,7 @@ import {
 import type { Policy } from '@/lib/mockData'
 
 export default function PoliciesPage() {
+  const { t } = useTranslation()
   const { policies, addPolicy, updatePolicy, deletePolicy } = usePolicies()
   const { credentials } = useCredentials()
   const { agents } = useAgents()
@@ -107,7 +109,7 @@ export default function PoliciesPage() {
 
   return (
     <>
-      <DashboardHeader title="ポリシー" titleEn="Policies" />
+      <DashboardHeader title={t('policies.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-4">
           {/* Effective Summary */}
@@ -121,7 +123,7 @@ export default function PoliciesPage() {
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="検索 (Search)..."
+                  placeholder={t('common.search')}
                   className="pl-8"
                 />
               </div>
@@ -133,7 +135,7 @@ export default function PoliciesPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">全て</SelectItem>
+                  <SelectItem value="all">{t('common.all')}</SelectItem>
                   <SelectItem value="global">Global</SelectItem>
                   <SelectItem value="agent">Agent</SelectItem>
                 </SelectContent>
@@ -142,7 +144,7 @@ export default function PoliciesPage() {
             {!readOnly && (
               <Button size="sm" onClick={() => setCreateOpen(true)}>
                 <Plus className="mr-1.5 size-4" />
-                新規作成
+                {t('policies.createNew')}
               </Button>
             )}
           </div>
@@ -152,21 +154,21 @@ export default function PoliciesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">名前 (Name)</TableHead>
-                  <TableHead className="hidden text-xs sm:table-cell">スコープ</TableHead>
-                  <TableHead className="text-xs">有効</TableHead>
-                  <TableHead className="hidden text-xs md:table-cell">ファイル</TableHead>
-                  <TableHead className="hidden text-xs md:table-cell">認証情報</TableHead>
-                  <TableHead className="hidden text-xs lg:table-cell">ネットワーク</TableHead>
-                  <TableHead className="hidden text-xs lg:table-cell">更新日</TableHead>
-                  <TableHead className="text-right text-xs">操作</TableHead>
+                  <TableHead className="text-xs">{t('policies.name')}</TableHead>
+                  <TableHead className="hidden text-xs sm:table-cell">{t('policies.scope')}</TableHead>
+                  <TableHead className="text-xs">{t('policies.enabled')}</TableHead>
+                  <TableHead className="hidden text-xs md:table-cell">{t('policies.file')}</TableHead>
+                  <TableHead className="hidden text-xs md:table-cell">{t('policies.credentialsCol')}</TableHead>
+                  <TableHead className="hidden text-xs lg:table-cell">{t('policies.networkCol')}</TableHead>
+                  <TableHead className="hidden text-xs lg:table-cell">{t('policies.updated')}</TableHead>
+                  <TableHead className="text-right text-xs">{t('policies.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} className="h-24 text-center text-sm text-muted-foreground">
-                      ポリシーが見つかりません。
+                      {t('policies.noPolicies')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -203,8 +205,8 @@ export default function PoliciesPage() {
                         {fr && (
                           <span className="text-xs text-muted-foreground">
                             {fr.mode === 'allowlist'
-                              ? `${fr.allowedPaths.length} パス許可`
-                              : `${fr.deniedPaths.length} パス拒否`}
+                              ? `${fr.allowedPaths.length} ${t('policies.pathsAllowed')}`
+                              : `${fr.deniedPaths.length} ${t('policies.pathsDenied')}`}
                           </span>
                         )}
                       </TableCell>
@@ -215,10 +217,10 @@ export default function PoliciesPage() {
                             className={`text-[10px] ${cr.mode === 'allowAny' ? 'border-destructive text-destructive' : ''}`}
                           >
                             {cr.mode === 'onlyRegistered'
-                              ? '登録済みのみ'
+                              ? t('policies.onlyRegistered')
                               : cr.mode === 'allowNone'
-                                ? '不可'
-                                : '全許可'}
+                                ? t('policies.none')
+                                : t('policies.allowAll')}
                           </Badge>
                         )}
                       </TableCell>
@@ -229,10 +231,10 @@ export default function PoliciesPage() {
                             className={`text-[10px] ${nr.mode === 'allowAll' ? 'border-destructive text-destructive' : ''}`}
                           >
                             {nr.mode === 'allowlist'
-                              ? `${nr.domains.length} ドメイン`
+                              ? `${nr.domains.length} ${t('policies.domains')}`
                               : nr.mode === 'blockAll'
-                                ? 'ブロック'
-                                : '全許可'}
+                                ? t('policies.block')
+                                : t('policies.allowAll')}
                           </Badge>
                         )}
                       </TableCell>
@@ -246,7 +248,7 @@ export default function PoliciesPage() {
                             size="icon"
                             className="size-8"
                             onClick={() => setViewPolicy(p)}
-                            aria-label="詳細"
+                            aria-label={t('common.details')}
                           >
                             <Eye className="size-3.5" />
                           </Button>
@@ -257,7 +259,7 @@ export default function PoliciesPage() {
                                 size="icon"
                                 className="size-8"
                                 onClick={() => setEditPolicy(p)}
-                                aria-label="編集"
+                                aria-label={t('common.edit')}
                               >
                                 <Pencil className="size-3.5" />
                               </Button>
@@ -266,7 +268,7 @@ export default function PoliciesPage() {
                                 size="icon"
                                 className="size-8 text-destructive"
                                 onClick={() => setDeleteTarget(p)}
-                                aria-label="削除"
+                                aria-label={t('common.delete')}
                               >
                                 <Trash2 className="size-3.5" />
                               </Button>
@@ -287,9 +289,9 @@ export default function PoliciesPage() {
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>ポリシーを作成 (Create Policy)</DialogTitle>
+            <DialogTitle>{t('policies.createPolicy')}</DialogTitle>
             <DialogDescription>
-              エージェントのアクセス制御ルールを定義します。
+              {t('policies.createPolicyDesc')}
             </DialogDescription>
           </DialogHeader>
           <PolicyForm
@@ -306,9 +308,9 @@ export default function PoliciesPage() {
       <Dialog open={!!editPolicy} onOpenChange={() => setEditPolicy(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>ポリシーを編集 (Edit Policy)</DialogTitle>
+            <DialogTitle>{t('policies.editPolicy')}</DialogTitle>
             <DialogDescription>
-              既存のポリシーを変更します。
+              {t('policies.editPolicyDesc')}
             </DialogDescription>
           </DialogHeader>
           {editPolicy && (
@@ -339,23 +341,23 @@ export default function PoliciesPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-destructive">
               <AlertTriangle className="size-5" />
-              ポリシーを削除 (Delete Policy)
+              {t('policies.deletePolicy')}
             </DialogTitle>
             <DialogDescription>
-              この操作は取り消せません。ポリシー「{deleteTarget?.name}」を削除すると、関連するエージェントのアクセス制御が解除されます。
+              {t('policies.deleteDesc').replace('{name}', deleteTarget?.name ?? '')}
             </DialogDescription>
           </DialogHeader>
           <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3">
             <p className="text-sm font-medium text-destructive">
-              警告: このポリシーが有効な場合、エージェントの制限が直ちに解除されます。
+              {t('policies.deleteWarning')}
             </p>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>
-              キャンセル
+              {t('common.cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
-              削除する
+              {t('common.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

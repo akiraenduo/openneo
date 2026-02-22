@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useTranslation } from '@/lib/i18n'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -61,6 +62,7 @@ function emptyNetRule(): NetworkRule {
 }
 
 export function PolicyForm({ initial, agents, credentials, onSave, onCancel, readOnly }: PolicyFormProps) {
+  const { t } = useTranslation()
   const isEdit = !!initial
 
   const [name, setName] = useState(initial?.name ?? '')
@@ -82,14 +84,14 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
   // Validation
   function validate(): string[] {
     const errs: string[] = []
-    if (!name.trim()) errs.push('ポリシー名は必須です。')
-    if (scope === 'agent' && !agentId) errs.push('エージェントを選択してください。')
+    if (!name.trim()) errs.push(t('policyForm.policyNameRequired'))
+    if (scope === 'agent' && !agentId) errs.push(t('policyForm.agentRequired'))
     if (fileRule.mode === 'allowlist' && fileRule.allowedPaths.length === 0)
-      errs.push('許可リストモードでは、少なくとも1つの許可パスが必要です。')
+      errs.push(t('policyForm.allowlistPathRequired'))
     if (credRule.mode === 'onlyRegistered' && credRule.allowedCredentialIds.length === 0)
-      errs.push('登録済みモードでは、少なくとも1つのクレデンシャルを選択してください。')
+      errs.push(t('policyForm.credentialRequired'))
     if (netRule.mode === 'allowlist' && netRule.domains.length === 0)
-      errs.push('許可リストモードでは、少なくとも1つのドメインが必要です。')
+      errs.push(t('policyForm.domainRequired'))
     return errs
   }
 
@@ -98,30 +100,30 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
     const items: string[] = []
     if (fileRule.mode === 'allowlist') {
       items.push(
-        `ファイルアクセス: 許可パス以外のファイルへのアクセスがブロックされます。(${fileRule.allowedPaths.length} パス許可)`,
+        t('policyForm.impactFileAllowlist').replace('{count}', String(fileRule.allowedPaths.length)),
       )
     }
     if (fileRule.mode === 'denylist') {
       items.push(
-        `ファイルアクセス: 拒否リストのパスへのアクセスがブロックされます。(${fileRule.deniedPaths.length} パス拒否)`,
+        t('policyForm.impactFileDenylist').replace('{count}', String(fileRule.deniedPaths.length)),
       )
     }
-    if (!fileRule.write) items.push('ファイル書き込みが禁止されます。')
-    if (!fileRule.delete) items.push('ファイル削除が禁止されます。')
+    if (!fileRule.write) items.push(t('policyForm.impactNoWrite'))
+    if (!fileRule.delete) items.push(t('policyForm.impactNoDelete'))
     if (credRule.mode === 'onlyRegistered') {
       items.push(
-        `クレデンシャル: 未登録のID/パスワードの使用がブロックされます。(${credRule.allowedCredentialIds.length} 件許可)`,
+        t('policyForm.impactCredOnlyRegistered').replace('{count}', String(credRule.allowedCredentialIds.length)),
       )
     }
-    if (credRule.mode === 'allowNone') items.push('クレデンシャル: 全てのクレデンシャル使用がブロックされます。')
-    if (credRule.requireApprovalForUse) items.push('クレデンシャル使用時に承認が必要になります。')
-    if (netRule.mode === 'blockAll') items.push('ネットワーク: 全ての外部リクエストがブロックされます。')
+    if (credRule.mode === 'allowNone') items.push(t('policyForm.impactCredAllowNone'))
+    if (credRule.requireApprovalForUse) items.push(t('policyForm.impactCredApproval'))
+    if (netRule.mode === 'blockAll') items.push(t('policyForm.impactNetBlockAll'))
     if (netRule.mode === 'allowlist') {
-      items.push(`ネットワーク: 許可ドメイン以外へのリクエストがブロックされます。(${netRule.domains.length} ドメイン許可)`)
+      items.push(t('policyForm.impactNetAllowlist').replace('{count}', String(netRule.domains.length)))
     }
-    if (netRule.requireApproval) items.push('外部リクエスト時に承認が必要になります。')
+    if (netRule.requireApproval) items.push(t('policyForm.impactNetApproval'))
     return items
-  }, [fileRule, credRule, netRule])
+  }, [fileRule, credRule, netRule, t])
 
   function handleSave() {
     const errs = validate()
@@ -162,27 +164,27 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
 
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="w-full justify-start">
-          <TabsTrigger value="general">基本 (General)</TabsTrigger>
-          <TabsTrigger value="file">ファイル (File)</TabsTrigger>
-          <TabsTrigger value="credential">認証情報 (Cred)</TabsTrigger>
-          <TabsTrigger value="network">ネットワーク (Net)</TabsTrigger>
+          <TabsTrigger value="general">{t('policyForm.general')}</TabsTrigger>
+          <TabsTrigger value="file">{t('policyForm.fileTab')}</TabsTrigger>
+          <TabsTrigger value="credential">{t('policyForm.credentialTab')}</TabsTrigger>
+          <TabsTrigger value="network">{t('policyForm.networkTab')}</TabsTrigger>
         </TabsList>
 
-        {/* ── General ── */}
+        {/* -- General -- */}
         <TabsContent value="general" className="flex flex-col gap-4 pt-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="policy-name">ポリシー名 (Name)</Label>
+            <Label htmlFor="policy-name">{t('policyForm.policyName')}</Label>
             <Input
               id="policy-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="例: グローバルセキュリティポリシー"
+              placeholder={t('policyForm.policyNamePlaceholder')}
               disabled={readOnly}
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>スコープ (Scope)</Label>
+            <Label>{t('policyForm.scope')}</Label>
             <RadioGroup
               value={scope}
               onValueChange={(v) => setScope(v as 'global' | 'agent')}
@@ -191,21 +193,21 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
             >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="global" id="scope-global" />
-                <Label htmlFor="scope-global" className="text-sm">グローバル (Global)</Label>
+                <Label htmlFor="scope-global" className="text-sm">{t('policyForm.global')}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="agent" id="scope-agent" />
-                <Label htmlFor="scope-agent" className="text-sm">エージェント (Agent)</Label>
+                <Label htmlFor="scope-agent" className="text-sm">{t('policyForm.agent')}</Label>
               </div>
             </RadioGroup>
           </div>
 
           {scope === 'agent' && (
             <div className="flex flex-col gap-2">
-              <Label>対象エージェント (Target Agent)</Label>
+              <Label>{t('policyForm.targetAgent')}</Label>
               <Select value={agentId} onValueChange={setAgentId} disabled={readOnly}>
                 <SelectTrigger>
-                  <SelectValue placeholder="エージェントを選択" />
+                  <SelectValue placeholder={t('policyForm.selectAgent')} />
                 </SelectTrigger>
                 <SelectContent>
                   {agents.map((a) => (
@@ -226,15 +228,15 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               disabled={readOnly}
             />
             <Label htmlFor="policy-enabled" className="text-sm">
-              有効 (Enabled)
+              {t('policyForm.enabled')}
             </Label>
           </div>
         </TabsContent>
 
-        {/* ── File Access ── */}
+        {/* -- File Access -- */}
         <TabsContent value="file" className="flex flex-col gap-4 pt-4">
           <div className="flex flex-col gap-2">
-            <Label>モード (Mode)</Label>
+            <Label>{t('policyForm.mode')}</Label>
             <RadioGroup
               value={fileRule.mode}
               onValueChange={(v) =>
@@ -246,14 +248,14 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="allowlist" id="file-allowlist" />
                 <Label htmlFor="file-allowlist" className="text-sm">
-                  許可リスト (Allowlist)
+                  {t('policyForm.allowlist')}
                 </Label>
-                <Badge variant="outline" className="text-[10px]">推奨</Badge>
+                <Badge variant="outline" className="text-[10px]">{t('common.recommended')}</Badge>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="denylist" id="file-denylist" />
                 <Label htmlFor="file-denylist" className="text-sm">
-                  拒否リスト (Denylist)
+                  {t('policyForm.denylist')}
                 </Label>
               </div>
             </RadioGroup>
@@ -261,13 +263,13 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
 
           {fileRule.mode === 'allowlist' && (
             <div className="flex flex-col gap-2">
-              <Label>許可パス (Allowed Paths)</Label>
+              <Label>{t('policyForm.allowedPaths')}</Label>
               <ChipInput
                 values={fileRule.allowedPaths}
                 onChange={(paths) =>
                   setFileRule({ ...fileRule, allowedPaths: paths })
                 }
-                placeholder="パスを入力して Enter (例: /Users/akira/Projects)"
+                placeholder={t('policyForm.allowedPathsPlaceholder')}
                 disabled={readOnly}
               />
             </div>
@@ -275,13 +277,13 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
 
           {fileRule.mode === 'denylist' && (
             <div className="flex flex-col gap-2">
-              <Label>拒否パス (Denied Paths)</Label>
+              <Label>{t('policyForm.deniedPaths')}</Label>
               <ChipInput
                 values={fileRule.deniedPaths}
                 onChange={(paths) =>
                   setFileRule({ ...fileRule, deniedPaths: paths })
                 }
-                placeholder="パスを入力して Enter"
+                placeholder={t('policyForm.deniedPathsPlaceholder')}
                 disabled={readOnly}
               />
             </div>
@@ -295,11 +297,11 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               }
               disabled={readOnly}
             />
-            <Label className="text-sm">サブディレクトリを含む (Recursive)</Label>
+            <Label className="text-sm">{t('policyForm.recursive')}</Label>
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>権限 (Permissions)</Label>
+            <Label>{t('policyForm.filePermissions')}</Label>
             <div className="flex flex-wrap gap-4">
               <label className="flex items-center gap-2 text-sm">
                 <Checkbox
@@ -309,7 +311,7 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
                   }
                   disabled={readOnly}
                 />
-                読み取り (Read)
+                {t('policyForm.read')}
               </label>
               <label className="flex items-center gap-2 text-sm">
                 <Checkbox
@@ -319,7 +321,7 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
                   }
                   disabled={readOnly}
                 />
-                書き込み (Write)
+                {t('policyForm.write')}
               </label>
               <label className="flex items-center gap-2 text-sm">
                 <Checkbox
@@ -329,7 +331,7 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
                   }
                   disabled={readOnly}
                 />
-                削除 (Delete)
+                {t('policyForm.deletePermission')}
               </label>
             </div>
           </div>
@@ -338,16 +340,16 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
             <ShieldAlert className="size-4" />
             <AlertDescription className="text-sm">
               {fileRule.mode === 'allowlist'
-                ? 'エージェントは許可されたパス以外のファイルにアクセスできなくなります。'
-                : 'エージェントは拒否リストのパスにアクセスできなくなります。'}
+                ? t('policyForm.fileAllowlistAlert')
+                : t('policyForm.fileDenylistAlert')}
             </AlertDescription>
           </Alert>
         </TabsContent>
 
-        {/* ── Credentials ── */}
+        {/* -- Credentials -- */}
         <TabsContent value="credential" className="flex flex-col gap-4 pt-4">
           <div className="flex flex-col gap-2">
-            <Label>モード (Mode)</Label>
+            <Label>{t('policyForm.mode')}</Label>
             <RadioGroup
               value={credRule.mode}
               onValueChange={(v) =>
@@ -359,29 +361,29 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="onlyRegistered" id="cred-only" />
                 <Label htmlFor="cred-only" className="text-sm">
-                  登録済みのみ (Only Registered)
+                  {t('policyForm.credOnlyRegistered')}
                 </Label>
-                <Badge variant="outline" className="text-[10px]">推奨</Badge>
+                <Badge variant="outline" className="text-[10px]">{t('common.recommended')}</Badge>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="allowNone" id="cred-none" />
                 <Label htmlFor="cred-none" className="text-sm">
-                  使用不可 (Allow None)
+                  {t('policyForm.credAllowNone')}
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="allowAny" id="cred-any" />
                 <Label htmlFor="cred-any" className="text-sm">
-                  全て許可 (Allow Any)
+                  {t('policyForm.credAllowAny')}
                 </Label>
-                <Badge variant="destructive" className="text-[10px]">危険</Badge>
+                <Badge variant="destructive" className="text-[10px]">{t('common.danger')}</Badge>
               </div>
             </RadioGroup>
           </div>
 
           {credRule.mode === 'onlyRegistered' && (
             <div className="flex flex-col gap-2">
-              <Label>許可クレデンシャル (Allowed Credentials)</Label>
+              <Label>{t('policyForm.allowedCredentials')}</Label>
               <div className="flex flex-col gap-2 rounded-md border p-3">
                 {credentials.map((c) => (
                   <label key={c.id} className="flex items-center gap-2 text-sm">
@@ -412,14 +414,14 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               }
               disabled={readOnly}
             />
-            <Label className="text-sm">使用時に承認を要求 (Require Approval)</Label>
+            <Label className="text-sm">{t('policyForm.requireApproval')}</Label>
           </div>
 
           {credRule.mode === 'onlyRegistered' && (
             <Alert>
               <ShieldAlert className="size-4" />
               <AlertDescription className="text-sm">
-                エージェントは未登録のID/パスワードを使用できなくなります。
+                {t('policyForm.credOnlyRegisteredAlert')}
               </AlertDescription>
             </Alert>
           )}
@@ -428,16 +430,16 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
             <Alert variant="destructive">
               <AlertTriangle className="size-4" />
               <AlertDescription className="text-sm">
-                警告: エージェントが任意のクレデンシャルを使用できます。本番環境では非推奨です。
+                {t('policyForm.credAllowAnyAlert')}
               </AlertDescription>
             </Alert>
           )}
         </TabsContent>
 
-        {/* ── Network ── */}
+        {/* -- Network -- */}
         <TabsContent value="network" className="flex flex-col gap-4 pt-4">
           <div className="flex flex-col gap-2">
-            <Label>モード (Mode)</Label>
+            <Label>{t('policyForm.mode')}</Label>
             <RadioGroup
               value={netRule.mode}
               onValueChange={(v) =>
@@ -449,35 +451,35 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="blockAll" id="net-block" />
                 <Label htmlFor="net-block" className="text-sm">
-                  全てブロック (Block All)
+                  {t('policyForm.netBlockAll')}
                 </Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="allowlist" id="net-allow" />
                 <Label htmlFor="net-allow" className="text-sm">
-                  許可リスト (Allowlist)
+                  {t('policyForm.netAllowlist')}
                 </Label>
-                <Badge variant="outline" className="text-[10px]">推奨</Badge>
+                <Badge variant="outline" className="text-[10px]">{t('common.recommended')}</Badge>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="allowAll" id="net-all" />
                 <Label htmlFor="net-all" className="text-sm">
-                  全て許可 (Allow All)
+                  {t('policyForm.netAllowAll')}
                 </Label>
-                <Badge variant="destructive" className="text-[10px]">危険</Badge>
+                <Badge variant="destructive" className="text-[10px]">{t('common.danger')}</Badge>
               </div>
             </RadioGroup>
           </div>
 
           {netRule.mode === 'allowlist' && (
             <div className="flex flex-col gap-2">
-              <Label>許可ドメイン (Allowed Domains)</Label>
+              <Label>{t('policyForm.allowedDomains')}</Label>
               <ChipInput
                 values={netRule.domains}
                 onChange={(domains) =>
                   setNetRule({ ...netRule, domains })
                 }
-                placeholder="ドメインを入力して Enter (例: api.openai.com)"
+                placeholder={t('policyForm.allowedDomainsPlaceholder')}
                 disabled={readOnly}
               />
             </div>
@@ -491,14 +493,14 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
               }
               disabled={readOnly}
             />
-            <Label className="text-sm">外部リクエスト時に承認を要求 (Require Approval)</Label>
+            <Label className="text-sm">{t('policyForm.requireApprovalNet')}</Label>
           </div>
 
           {netRule.mode === 'allowAll' && (
             <Alert variant="destructive">
               <AlertTriangle className="size-4" />
               <AlertDescription className="text-sm">
-                警告: エージェントが任意の外部サービスにアクセスできます。本番環境では非推奨です。
+                {t('policyForm.netAllowAllAlert')}
               </AlertDescription>
             </Alert>
           )}
@@ -515,13 +517,13 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
           className="w-fit"
         >
           <Info className="mr-1.5 size-3.5" />
-          {showPreview ? '影響プレビューを隠す' : '影響プレビューを表示 (Preview Impact)'}
+          {showPreview ? t('policyForm.hidePreview') : t('policyForm.showPreview')}
         </Button>
         {showPreview && (
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs">
-                この設定が適用された場合の影響:
+                {t('policyForm.impactTitle')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -542,10 +544,10 @@ export function PolicyForm({ initial, agents, credentials, onSave, onCancel, rea
       {!readOnly && (
         <div className="flex items-center justify-end gap-2 border-t pt-4">
           <Button variant="outline" onClick={onCancel}>
-            キャンセル
+            {t('common.cancel')}
           </Button>
           <Button onClick={handleSave}>
-            {isEdit ? '更新する (Update)' : '作成する (Create)'}
+            {isEdit ? t('policyForm.updateBtn') : t('policyForm.createBtn')}
           </Button>
         </div>
       )}

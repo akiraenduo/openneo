@@ -13,6 +13,7 @@ import {
   ListTodo,
   Cpu,
   Globe,
+  Battery,
 } from 'lucide-react'
 import {
   usePolicies,
@@ -22,15 +23,28 @@ import {
   useAgents,
   useJobs,
 } from '@/lib/store'
+import { useStaticSystemInfo, useDynamicSystemInfo } from '@/hooks/use-system-info'
+import { useBattery } from '@/hooks/use-battery'
 import Link from 'next/link'
+import { useTranslation } from '@/lib/i18n'
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(0)} MB`
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+}
 
 export default function DashboardPage() {
+  const { t } = useTranslation()
   const { policies } = usePolicies()
   const { credentials } = useCredentials()
   const { requests } = useAccessRequests()
   const { logs } = useAuditLogs()
   const { agents } = useAgents()
   const { jobs } = useJobs()
+  const { data: staticInfo } = useStaticSystemInfo()
+  const { data: dynamicInfo } = useDynamicSystemInfo(3000)
+  const { data: battery } = useBattery(10000)
 
   const enabledPolicies = policies.filter((p) => p.enabled).length
   const pendingRequests = requests.filter((r) => r.status === 'pending').length
@@ -39,78 +53,75 @@ export default function DashboardPage() {
   const totalCpu = agents.reduce((s, a) => s + a.cpuPercent, 0)
   const totalRam = agents.reduce((s, a) => s + a.ramMB, 0)
 
+  const totalRAMBytes = staticInfo?.totalRAMBytes || 36 * 1024 * 1024 * 1024
+  const freeRAMBytes = dynamicInfo?.freeRAMBytes
+  const usedRAMBytes = freeRAMBytes != null ? totalRAMBytes - freeRAMBytes : totalRam * 1024 * 1024
+  const memUsedPercent = Math.min(Math.round((usedRAMBytes / totalRAMBytes) * 100), 100)
+
   const monitorStats = [
     {
-      title: 'エージェント',
-      titleEn: 'Agents',
+      title: t('dashboard.agents'),
       value: `${runningAgents} / ${agents.length}`,
-      description: '実行中 / 合計',
+      description: t('dashboard.agentsDesc'),
       icon: Bot,
       href: '/dashboard/agents',
       color: 'text-foreground',
     },
     {
-      title: 'ジョブ',
-      titleEn: 'Jobs',
+      title: t('dashboard.jobs'),
       value: runningJobs,
-      description: '実行中',
+      description: t('dashboard.jobsDesc'),
       icon: ListTodo,
       href: '/dashboard/jobs',
       color: 'text-foreground',
     },
     {
-      title: 'CPU 合計',
-      titleEn: 'Total CPU',
-      value: `${totalCpu.toFixed(1)}%`,
-      description: '全エージェント',
+      title: t('dashboard.totalCpu'),
+      value: dynamicInfo ? `${dynamicInfo.cpuLoadPercent.toFixed(1)}%` : `${totalCpu.toFixed(1)}%`,
+      description: t('dashboard.totalCpuDesc'),
       icon: Cpu,
-      href: '/dashboard/agents',
+      href: '/dashboard/system',
       color: 'text-foreground',
     },
     {
-      title: 'RAM 使用量',
-      titleEn: 'RAM Usage',
-      value: `${totalRam} MB`,
-      description: '全エージェント',
+      title: t('dashboard.ramUsage'),
+      value: freeRAMBytes != null ? formatBytes(usedRAMBytes) : `${totalRam} MB`,
+      description: t('dashboard.ramUsageDesc'),
       icon: Globe,
-      href: '/dashboard/agents',
+      href: '/dashboard/system',
       color: 'text-foreground',
     },
   ]
 
   const securityStats = [
     {
-      title: 'ポリシー',
-      titleEn: 'Policies',
+      title: t('dashboard.policies'),
       value: `${enabledPolicies} / ${policies.length}`,
-      description: '有効 / 合計',
+      description: t('dashboard.policiesDesc'),
       icon: ShieldCheck,
       href: '/dashboard/policies',
       color: 'text-foreground',
     },
     {
-      title: 'クレデンシャル',
-      titleEn: 'Credentials',
+      title: t('dashboard.credentials'),
       value: credentials.length,
-      description: '登録済み',
+      description: t('dashboard.credentialsDesc'),
       icon: KeyRound,
       href: '/dashboard/credentials',
       color: 'text-foreground',
     },
     {
-      title: 'アクセス要求',
-      titleEn: 'Requests',
+      title: t('dashboard.requests'),
       value: pendingRequests,
-      description: '承認待ち',
+      description: t('dashboard.requestsDesc'),
       icon: FileWarning,
       href: '/dashboard/requests',
       color: pendingRequests > 0 ? 'text-destructive' : 'text-foreground',
     },
     {
-      title: '監査ログ',
-      titleEn: 'Audit Logs',
+      title: t('dashboard.auditLogs'),
       value: logs.length,
-      description: '記録数',
+      description: t('dashboard.auditLogsDesc'),
       icon: ScrollText,
       href: '/dashboard/audit',
       color: 'text-foreground',
@@ -119,17 +130,17 @@ export default function DashboardPage() {
 
   return (
     <>
-      <DashboardHeader title="ダッシュボード" titleEn="Dashboard" />
+      <DashboardHeader title={t('dashboard.title')} />
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto flex max-w-5xl flex-col gap-6">
           {/* Monitor section */}
           <div>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              モニター (Monitor)
+              {t('dashboard.monitor')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {monitorStats.map((stat) => (
-                <Link key={stat.href + stat.titleEn} href={stat.href}>
+                <Link key={stat.href + stat.title} href={stat.href}>
                   <Card className="transition-colors hover:bg-accent/50">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                       <CardTitle className="text-xs font-medium text-muted-foreground">
@@ -149,22 +160,35 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Memory pressure mock */}
+          {/* Memory pressure - real data when available */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">メモリプレッシャー (Memory Pressure)</CardTitle>
-              <CardDescription>システム全体のメモリ使用状況 (Mock)</CardDescription>
+              <CardTitle className="text-sm">{t('dashboard.memoryPressure')}</CardTitle>
+              <CardDescription>
+                {dynamicInfo ? t('dashboard.memoryPressureDescLive') : t('dashboard.memoryPressureDesc')}
+              </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">使用中</span>
-                <span className="font-mono">{totalRam} MB / 36,864 MB</span>
+                <span className="text-muted-foreground">{t('dashboard.inUse')}</span>
+                <span className="font-mono">
+                  {formatBytes(usedRAMBytes)} / {formatBytes(totalRAMBytes)}
+                </span>
               </div>
-              <Progress value={Math.min((totalRam / 36864) * 100, 100)} className="h-2" />
+              <Progress value={memUsedPercent} className="h-2" />
               <div className="flex gap-4 text-xs text-muted-foreground">
-                <span>ローカル LLM: 4,200 MB</span>
-                <span>エージェント: {totalRam} MB</span>
-                <span>システム: 8,400 MB</span>
+                {dynamicInfo && (
+                  <span>
+                    {t('dashboard.pressure')}: <Badge variant="outline" className="text-[9px]">{dynamicInfo.memoryPressure}</Badge>
+                  </span>
+                )}
+                <span>{`${t('agents.title')}: ${totalRam} MB`}</span>
+                {battery && battery.percent >= 0 && (
+                  <span className="flex items-center gap-1">
+                    <Battery className="size-3" />
+                    {battery.percent}%
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -172,7 +196,7 @@ export default function DashboardPage() {
           {/* Security section */}
           <div>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              セキュリティ (Security)
+              {t('dashboard.security')}
             </h2>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {securityStats.map((stat) => (
@@ -199,8 +223,8 @@ export default function DashboardPage() {
           {/* Recent audit logs */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">最近の監査ログ (Recent Audit Logs)</CardTitle>
-              <CardDescription>最新5件のイベント</CardDescription>
+              <CardTitle className="text-sm">{t('dashboard.recentAuditLogs')}</CardTitle>
+              <CardDescription>{t('dashboard.latestEvents')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-3">
