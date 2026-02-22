@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Download,
-  Package,
   Cpu,
   Brain,
   ShieldCheck,
@@ -60,13 +59,7 @@ export default function LandingPage() {
             <Button asChild size="lg" className="w-full gap-2 sm:w-auto">
               <Link href="/download">
                 <Download className="size-4" />
-                {t('landing.downloadDmg')}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full gap-2 sm:w-auto">
-              <Link href="/download">
-                <Package className="size-4" />
-                {t('landing.getPkg')}
+                {t('landing.downloadAppleSilicon')}
               </Link>
             </Button>
           </div>
