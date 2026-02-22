@@ -13,8 +13,13 @@ mac:
       arch:
         - arm64
   icon: electron/icons/icon.icns
+  hardenedRuntime: true
+  entitlements: electron/entitlements.mac.plist
+  entitlementsInherit: electron/entitlements.mac.plist
+  notarize: true
 dmg:
   title: "${productName}"
+  sign: false
   contents:
     - x: 130
       y: 220
