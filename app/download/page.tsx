@@ -74,7 +74,6 @@ export default function DownloadPage() {
                 <span>{t('download.version')}: <span className="font-mono text-foreground">v{RELEASE_VERSION}</span></span>
                 <span>{t('download.macos')}: <span className="text-foreground">13.0+</span></span>
                 <span>{t('download.size')}: <span className="text-foreground">185 MB</span></span>
-                <span className="font-mono break-all">SHA-256: e3b0c44298fc1c149afbf4c8996fb924...a3dc</span>
               </div>
             </CardContent>
           </Card>
@@ -160,11 +159,6 @@ export default function DownloadPage() {
               {t('download.downloadConfirmDesc')}
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-lg border border-border bg-secondary p-3">
-            <code className="text-xs text-foreground font-mono break-all">
-              {downloadUrl}
-            </code>
-          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowConfirm(false)}>
               {t('common.cancel')}

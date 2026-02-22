@@ -22,6 +22,7 @@ import { useProcesses } from '@/hooks/use-processes'
 import { useBattery } from '@/hooks/use-battery'
 import { useLoginItem } from '@/hooks/use-login-item'
 import { useTranslation } from '@/lib/i18n'
+import { DEV_STATIC_INFO, DEV_DYNAMIC_INFO, DEV_PROCESSES, DEV_BATTERY } from '@/lib/dev-fallback'
 
 type SortKey = 'cpuPercent' | 'ramBytes' | 'pid' | 'command'
 type SortDir = 'asc' | 'desc'
@@ -47,6 +48,9 @@ export default function SystemPage() {
   const { data: battery } = useBattery(10000)
   const { settings: loginItem, toggle: toggleLoginItem } = useLoginItem()
 
+  const displayProcesses = processes.length > 0 ? processes : DEV_PROCESSES
+  const displayBattery = battery ?? DEV_BATTERY
+
   const [sortKey, setSortKey] = useState<SortKey>('cpuPercent')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
   const [killingPid, setKillingPid] = useState<number | null>(null)
@@ -60,7 +64,7 @@ export default function SystemPage() {
     }
   }
 
-  const sortedProcesses = [...processes].sort((a, b) => {
+  const sortedProcesses = [...displayProcesses].sort((a, b) => {
     const va = a[sortKey]
     const vb = b[sortKey]
     if (typeof va === 'string' && typeof vb === 'string') {
@@ -75,9 +79,9 @@ export default function SystemPage() {
     setKillingPid(null)
   }
 
-  const memoryUsedPercent = staticInfo && dynamicInfo
-    ? Math.round(((staticInfo.totalRAMBytes - dynamicInfo.freeRAMBytes) / staticInfo.totalRAMBytes) * 100)
-    : 0
+  const effectiveTotalRAM = staticInfo?.totalRAMBytes ?? DEV_STATIC_INFO.totalRAMBytes
+  const effectiveFreeRAM = dynamicInfo?.freeRAMBytes ?? DEV_DYNAMIC_INFO.freeRAMBytes
+  const memoryUsedPercent = Math.round(((effectiveTotalRAM - effectiveFreeRAM) / effectiveTotalRAM) * 100)
 
   return (
     <>
@@ -94,7 +98,7 @@ export default function SystemPage() {
                 <div>
                   <CardTitle className="text-sm">{t('system.macInfo')}</CardTitle>
                   <CardDescription className="text-xs">
-                    {staticInfo?.chipGeneration || 'Apple Silicon'}
+                    {staticInfo?.chipGeneration ?? DEV_STATIC_INFO.chipGeneration}
                   </CardDescription>
                 </div>
               </div>
@@ -104,46 +108,46 @@ export default function SystemPage() {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.cpu')}</span>
                   <span className="text-sm font-semibold">
-                    {staticInfo?.cpuModel || '—'}
+                    {staticInfo?.cpuModel ?? DEV_STATIC_INFO.cpuModel}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.chip')}</span>
                   <span className="text-sm font-semibold">
-                    {staticInfo?.chipGeneration || '—'}
+                    {staticInfo?.chipGeneration ?? DEV_STATIC_INFO.chipGeneration}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.gpuCores')}</span>
                   <span className="text-sm font-semibold">
-                    {staticInfo?.gpuCores || '—'}
+                    {staticInfo?.gpuCores ?? DEV_STATIC_INFO.gpuCores}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.totalRam')}</span>
                   <span className="text-sm font-semibold">
-                    {staticInfo ? formatBytes(staticInfo.totalRAMBytes) : '—'}
+                    {formatBytes(staticInfo?.totalRAMBytes ?? DEV_STATIC_INFO.totalRAMBytes)}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.disk')}</span>
                   <span className="text-sm font-semibold">
-                    {staticInfo ? `${formatBytes(staticInfo.diskFreeBytes)} / ${formatBytes(staticInfo.diskTotalBytes)}` : '—'}
+                    {`${formatBytes(staticInfo?.diskFreeBytes ?? DEV_STATIC_INFO.diskFreeBytes)} / ${formatBytes(staticInfo?.diskTotalBytes ?? DEV_STATIC_INFO.diskTotalBytes)}`}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">{t('system.osVersion')}</span>
                   <span className="text-sm font-semibold">
-                    macOS {staticInfo?.osVersion || '—'}
+                    macOS {staticInfo?.osVersion ?? DEV_STATIC_INFO.osVersion}
                   </span>
                 </div>
-                {battery && battery.percent >= 0 && (
+                {displayBattery && displayBattery.percent >= 0 && (
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs text-muted-foreground">{t('system.battery')}</span>
                     <span className="text-sm font-semibold flex items-center gap-1">
                       <Battery className="size-3" />
-                      {battery.percent}%
-                      {battery.charging && <Badge variant="outline" className="text-[9px] px-1 py-0">Charging</Badge>}
+                      {displayBattery.percent}%
+                      {displayBattery.charging && <Badge variant="outline" className="text-[9px] px-1 py-0">Charging</Badge>}
                     </span>
                   </div>
                 )}
@@ -164,10 +168,7 @@ export default function SystemPage() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{t('system.inUse')}</span>
                   <span className="font-mono">
-                    {dynamicInfo && staticInfo
-                      ? `${formatBytes(staticInfo.totalRAMBytes - dynamicInfo.freeRAMBytes)} / ${formatBytes(staticInfo.totalRAMBytes)}`
-                      : '— / —'
-                    }
+                    {`${formatBytes(effectiveTotalRAM - effectiveFreeRAM)} / ${formatBytes(effectiveTotalRAM)}`}
                   </span>
                 </div>
                 <Progress value={memoryUsedPercent} className="h-2" />
@@ -194,10 +195,10 @@ export default function SystemPage() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{t('system.loadAverage')}</span>
                   <span className="font-mono text-lg font-bold">
-                    {dynamicInfo?.cpuLoadPercent.toFixed(1) || '—'}%
+                    {(dynamicInfo?.cpuLoadPercent ?? DEV_DYNAMIC_INFO.cpuLoadPercent).toFixed(1)}%
                   </span>
                 </div>
-                <Progress value={dynamicInfo?.cpuLoadPercent || 0} className="h-2" />
+                <Progress value={dynamicInfo?.cpuLoadPercent ?? DEV_DYNAMIC_INFO.cpuLoadPercent} className="h-2" />
               </CardContent>
             </Card>
           </div>
@@ -254,7 +255,7 @@ export default function SystemPage() {
                         </td>
                       </tr>
                     ))}
-                    {processes.length === 0 && (
+                    {sortedProcesses.length === 0 && (
                       <tr>
                         <td colSpan={5} className="px-2 py-4 text-center text-xs text-muted-foreground">
                           {t('system.noProcesses')}
