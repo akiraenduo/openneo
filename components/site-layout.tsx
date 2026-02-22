@@ -16,7 +16,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-8 text-center md:flex-row md:justify-between md:text-left">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Shield className="size-4" />
-            <span className="text-sm font-medium">OpenXXX</span>
+            <span className="text-sm font-medium">OpenNeo</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
             <Link href="/download" className="hover:text-foreground transition-colors">{t('footer.download')}</Link>

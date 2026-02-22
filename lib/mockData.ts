@@ -198,7 +198,7 @@ export const defaultCredentials: Credential[] = [
   {
     id: 'cred-1',
     label: 'Gmail-SMTP',
-    username: 'team@openxxx.io',
+    username: 'team@OpenNeo.io',
     secretMasked: '••••••••••••',
     createdAt: '2025-12-01T09:00:00Z',
     lastUsedAt: '2026-02-20T14:30:00Z',
@@ -216,7 +216,7 @@ export const defaultCredentials: Credential[] = [
   {
     id: 'cred-3',
     label: 'Slack-Bot-Token',
-    username: 'xoxb-openxxx-bot',
+    username: 'xoxb-OpenNeo-bot',
     secretMasked: '••••••••••••',
     createdAt: '2026-01-10T12:00:00Z',
     tags: ['slack', 'bot'],
@@ -235,7 +235,7 @@ export const defaultPolicies: Policy[] = [
       {
         id: 'fr-1',
         mode: 'allowlist',
-        allowedPaths: ['/Users/akira/Projects', '/Users/akira/Documents/OpenXXX'],
+        allowedPaths: ['/Users/akira/Projects', '/Users/akira/Documents/OpenNeo'],
         deniedPaths: [],
         recursive: true,
         read: true,
@@ -409,11 +409,11 @@ export const defaultAuditLogs: AuditLogEntry[] = [
 // ─── localStorage helpers ───
 
 const STORAGE_KEYS = {
-  policies: 'openxxx_policies',
-  credentials: 'openxxx_credentials',
-  accessRequests: 'openxxx_access_requests',
-  auditLogs: 'openxxx_audit_logs',
-  readOnlyMode: 'openxxx_read_only_mode',
+  policies: 'OpenNeo_policies',
+  credentials: 'OpenNeo_credentials',
+  accessRequests: 'OpenNeo_access_requests',
+  auditLogs: 'OpenNeo_audit_logs',
+  readOnlyMode: 'OpenNeo_read_only_mode',
 } as const
 
 function getFromStorage<T>(key: string, fallback: T): T {

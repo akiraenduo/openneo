@@ -49,7 +49,7 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center md:py-32">
           <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-            OpenXXX
+            OpenNeo
             <span className="block text-muted-foreground">{t('landing.subtitle')}</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
