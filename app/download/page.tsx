@@ -21,7 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Download, HardDrive, Monitor, AlertTriangle } from "lucide-react"
 import { useTranslation } from "@/lib/i18n"
-import { RELEASE_VERSION, getDownloadUrl } from "@/lib/release-config"
+import { GITHUB_REPO, RELEASE_VERSION, getDownloadUrl } from "@/lib/release-config"
 
 export default function DownloadPage() {
   const { t } = useTranslation()
@@ -30,11 +30,17 @@ export default function DownloadPage() {
   const [downloadUrl, setDownloadUrl] = useState(getDownloadUrl())
 
   useEffect(() => {
-    fetch('/api/latest-release')
-      .then(res => res.json())
-      .then(data => {
-        setVersion(data.version)
-        setDownloadUrl(data.downloadUrl)
+    fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`)
+      .then(res => {
+        if (!res.ok) throw new Error('fetch failed')
+        return res.json()
+      })
+      .then(release => {
+        const ver = (release.tag_name as string).replace(/^v/, '')
+        const dmg = (release.assets as Array<{ name: string; browser_download_url: string }>)
+          .find(a => a.name.endsWith('-arm64.dmg'))
+        setVersion(ver)
+        setDownloadUrl(dmg?.browser_download_url ?? getDownloadUrl(ver))
       })
       .catch(() => {})
   }, [])
