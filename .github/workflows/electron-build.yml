@@ -81,13 +81,13 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: pnpm electron:build
+        run: ELECTRON_BUILD=true npx next build && npx electron-builder --mac --publish never
 
       - name: Build Electron app (unsigned)
         if: env.HAS_SIGNING_CERT != 'true'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
-        run: pnpm electron:build
+        run: ELECTRON_BUILD=true npx next build && npx electron-builder --mac --publish never
 
       - name: Verify DMG exists
         run: |
