@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -27,6 +27,7 @@ jobs:
 
     env:
       HAS_SIGNING_CERT: ${{ secrets.CSC_LINK != '' }}
+      HAS_GCP_CREDENTIALS: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}
 
     steps:
       - name: Checkout repository
@@ -99,25 +100,39 @@ jobs:
           fi
           echo "DMG found: $(du -h "$DMG_PATH" | cut -f1)"
 
+      # Upload to Firebase Storage (if GCP credentials are configured)
       - name: Authenticate to Google Cloud
+        if: env.HAS_GCP_CREDENTIALS == 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Setup Google Cloud SDK
+        if: env.HAS_GCP_CREDENTIALS == 'true'
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Upload DMG to Firebase Storage
+        if: env.HAS_GCP_CREDENTIALS == 'true'
         run: |
           gcloud storage cp \
             "dist/${{ steps.version.outputs.dmg_filename }}" \
             "gs://open-neo.firebasestorage.app/installers/${{ steps.version.outputs.dmg_filename }}"
 
-      - name: Verify upload
+      - name: Verify Firebase upload
+        if: env.HAS_GCP_CREDENTIALS == 'true'
         run: |
           gcloud storage ls \
             "gs://open-neo.firebasestorage.app/installers/${{ steps.version.outputs.dmg_filename }}"
+
+      # Upload to GitHub Release (always — works with built-in GITHUB_TOKEN)
+      - name: Create GitHub Release and upload DMG
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          files: dist/${{ steps.version.outputs.dmg_filename }}
+          make_latest: true
 
       - name: Cleanup keychain
         if: always() && env.HAS_SIGNING_CERT == 'true'
