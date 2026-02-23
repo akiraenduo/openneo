@@ -59,7 +59,7 @@ function createWindow() {
     show: false,
   })
 
-  mainWindow.loadURL('app://./')
+  mainWindow.loadURL('app://./dashboard/')
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

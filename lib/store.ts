@@ -11,16 +11,6 @@ import type {
   LLMModel,
   NetworkDomain,
 } from './mockData'
-import {
-  defaultPolicies,
-  defaultCredentials,
-  defaultAccessRequests,
-  defaultAuditLogs,
-  defaultAgents,
-  defaultJobs,
-  defaultModels,
-  defaultNetworkDomains,
-} from './mockData'
 
 // ─── localStorage helpers ───
 
@@ -75,7 +65,7 @@ function usePersistedState<T>(key: string, fallback: T) {
 export function useAgents() {
   const [agents, , hydrated] = usePersistedState<Agent[]>(
     'OpenNeo-agents',
-    defaultAgents,
+    [],
   )
   return { agents, hydrated }
 }
@@ -83,7 +73,7 @@ export function useAgents() {
 export function usePolicies() {
   const [policies, setPolicies, hydrated] = usePersistedState<Policy[]>(
     'OpenNeo-policies',
-    defaultPolicies,
+    [],
   )
 
   const addPolicy = useCallback(
@@ -112,7 +102,7 @@ export function usePolicies() {
 export function useCredentials() {
   const [credentials, setCredentials, hydrated] = usePersistedState<Credential[]>(
     'OpenNeo-credentials',
-    defaultCredentials,
+    [],
   )
 
   const addCredential = useCallback(
@@ -139,7 +129,7 @@ export function useCredentials() {
 export function useAccessRequests() {
   const [requests, setRequests, hydrated] = usePersistedState<AccessRequest[]>(
     'OpenNeo-requests',
-    defaultAccessRequests,
+    [],
   )
 
   const updateRequest = useCallback(
@@ -156,7 +146,7 @@ export function useAccessRequests() {
 export function useAuditLogs() {
   const [logs, setLogs, hydrated] = usePersistedState<AuditLogEntry[]>(
     'OpenNeo-audit-logs',
-    defaultAuditLogs,
+    [],
   )
 
   const addLog = useCallback(
@@ -181,7 +171,7 @@ export function useAuditLogs() {
 export function useJobs() {
   const [jobs, setJobs, hydrated] = usePersistedState<Job[]>(
     'OpenNeo-jobs',
-    defaultJobs,
+    [],
   )
   return { jobs, setJobs, hydrated }
 }
@@ -189,7 +179,7 @@ export function useJobs() {
 export function useModels() {
   const [models, , hydrated] = usePersistedState<LLMModel[]>(
     'OpenNeo-models',
-    defaultModels,
+    [],
   )
   return { models, hydrated }
 }
@@ -197,7 +187,7 @@ export function useModels() {
 export function useNetworkDomains() {
   const [domains, setDomains, hydrated] = usePersistedState<NetworkDomain[]>(
     'OpenNeo-network-domains',
-    defaultNetworkDomains,
+    [],
   )
 
   const addDomain = useCallback(
