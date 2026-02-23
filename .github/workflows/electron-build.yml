@@ -117,13 +117,13 @@ jobs:
         run: |
           gcloud storage cp \
             "dist/${{ steps.version.outputs.dmg_filename }}" \
-            "gs://open-neo.firebasestorage.app/installers/${{ steps.version.outputs.dmg_filename }}"
+            "gs://open-neo.firebasestorage.app/installers/v${{ steps.version.outputs.version }}/${{ steps.version.outputs.dmg_filename }}"
 
       - name: Verify Firebase upload
         if: env.HAS_GCP_CREDENTIALS == 'true'
         run: |
           gcloud storage ls \
-            "gs://open-neo.firebasestorage.app/installers/${{ steps.version.outputs.dmg_filename }}"
+            "gs://open-neo.firebasestorage.app/installers/v${{ steps.version.outputs.version }}/${{ steps.version.outputs.dmg_filename }}"
 
       # Upload to GitHub Release (always — works with built-in GITHUB_TOKEN)
       - name: Create GitHub Release and upload DMG
