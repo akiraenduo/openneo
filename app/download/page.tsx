@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SiteLayout } from "@/components/site-layout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,6 +26,18 @@ import { RELEASE_VERSION, getDownloadUrl } from "@/lib/release-config"
 export default function DownloadPage() {
   const { t } = useTranslation()
   const [showConfirm, setShowConfirm] = useState(false)
+  const [version, setVersion] = useState(RELEASE_VERSION)
+  const [downloadUrl, setDownloadUrl] = useState(getDownloadUrl())
+
+  useEffect(() => {
+    fetch('/api/latest-release')
+      .then(res => res.json())
+      .then(data => {
+        setVersion(data.version)
+        setDownloadUrl(data.downloadUrl)
+      })
+      .catch(() => {})
+  }, [])
 
   const releases = [
     t('download.release1'),
@@ -34,8 +46,6 @@ export default function DownloadPage() {
     t('download.release4'),
     t('download.release5'),
   ]
-
-  const downloadUrl = getDownloadUrl()
 
   function handleDownload() {
     setShowConfirm(false)
@@ -71,7 +81,7 @@ export default function DownloadPage() {
                 {t('download.downloadAppleSilicon')}
               </Button>
               <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
-                <span>{t('download.version')}: <span className="font-mono text-foreground">v{RELEASE_VERSION}</span></span>
+                <span>{t('download.version')}: <span className="font-mono text-foreground">v{version}</span></span>
                 <span>{t('download.macos')}: <span className="text-foreground">13.0+</span></span>
                 <span>{t('download.size')}: <span className="text-foreground">185 MB</span></span>
               </div>
@@ -137,7 +147,7 @@ export default function DownloadPage() {
         {/* Release notes */}
         <div className="mt-12">
           <h2 className="mb-4 text-lg font-semibold text-foreground">
-            {t('download.releaseNotes')} <Badge variant="secondary" className="ml-2">v{RELEASE_VERSION}</Badge>
+            {t('download.releaseNotes')} <Badge variant="secondary" className="ml-2">v{version}</Badge>
           </h2>
           <ul className="flex flex-col gap-2">
             {releases.map((r, i) => (

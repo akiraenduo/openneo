@@ -18,7 +18,8 @@ describe('release-config', () => {
     expect(getDownloadUrl()).toContain('arm64')
   })
 
-  it('getDownloadUrl() is a relative /downloads/ path', () => {
-    expect(getDownloadUrl()).toMatch(/^\/downloads\//)
+  it('getDownloadUrl() points to GitHub Releases', () => {
+    expect(getDownloadUrl()).toContain('github.com')
+    expect(getDownloadUrl()).toContain('/releases/download/')
   })
 })
